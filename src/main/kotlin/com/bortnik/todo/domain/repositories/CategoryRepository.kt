@@ -7,7 +7,7 @@ interface CategoryRepository {
 
     fun addCategory(category: CategoryCreate): Category
 
-    fun getCategoryById(categoryId: Int): Category
+    fun getCategoryById(categoryId: Int): Category?
 
     fun deleteCategory(categoryId: Int)
 }

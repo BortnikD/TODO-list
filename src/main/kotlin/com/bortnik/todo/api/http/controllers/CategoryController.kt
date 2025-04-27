@@ -3,6 +3,7 @@ package com.bortnik.todo.api.http.controllers
 import com.bortnik.todo.domain.dto.CategoryCreate
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.exceptions.CategoryNotFound
+import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.usecase.category.CreateCategoryUseCase
 import com.bortnik.todo.usecase.category.DeleteCategoryUseCase
 import com.bortnik.todo.usecase.category.GetCategoryUseCase
@@ -29,11 +30,13 @@ class CategoryController(
 
     @DeleteMapping("/{categoryId}")
     fun deleteCategory(@PathVariable categoryId: Int) {
+        if (categoryId <= 0) throw InvalidRequestField("category id must be greet then 0")
         deleteCategoryUseCase.deleteCategory(categoryId)
     }
 
     @GetMapping("/{categoryId}")
     fun getCategoryById(@PathVariable categoryId: Int): Category {
+        if (categoryId <= 0) throw InvalidRequestField("category id must be greet then 0")
         return getCategoryUseCase.getCategoryById(categoryId) ?: throw CategoryNotFound("category not found")
     }
 }

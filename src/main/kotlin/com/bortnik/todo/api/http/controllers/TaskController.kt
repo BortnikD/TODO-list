@@ -25,7 +25,7 @@ class TaskController(
     private val updateTaskUseCase: UpdateTaskUseCase
 ) {
 
-    @GetMapping()
+    @GetMapping
     fun getUncompletedTasks(@RequestParam field: String = "priority"): List<Task> {
         return getTaskUseCase.getTasksSortedByFieldOrDefault(field)
     }
@@ -35,13 +35,13 @@ class TaskController(
         return getTaskUseCase.getCompletedTasksSortedByFieldOrDefault(field)
     }
 
-    @PostMapping()
+    @PostMapping
     fun addTask(@RequestBody task: TaskCreate): Task {
         if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
         return createTaskUseCase.addTask(task)
     }
 
-    @PatchMapping()
+    @PatchMapping
     fun updateTask(@RequestBody task: TaskUpdate): Task {
         if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
         return updateTaskUseCase.updateTask(task)

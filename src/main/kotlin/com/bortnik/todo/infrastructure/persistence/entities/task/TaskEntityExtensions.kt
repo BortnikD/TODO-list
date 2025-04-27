@@ -1,4 +1,4 @@
-package com.bortnik.todo.infrastructure.persistence.entities
+package com.bortnik.todo.infrastructure.persistence.entities.task
 
 import com.bortnik.todo.domain.entities.Task
 

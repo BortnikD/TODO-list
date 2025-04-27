@@ -12,6 +12,7 @@ import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.TasksTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
@@ -24,48 +25,46 @@ class TaskRepository: TaskRepository {
         "category" to TasksTable.categoryId
     )
 
-    override fun addTask(task: TaskCreate): Task {
+    override fun addTask(task: TaskCreate): Task = transaction {
         val newTask = TaskEntity.new {
             categoryId = EntityID(task.categoryId, CategoriesTable)
             priority = task.priority
             text = task.text
         }
-
-        return newTask.toDomain()
+        newTask.toDomain()
     }
 
-    override fun getTasksSortedByFieldOrDefault(field: String): List<Task> {
+    override fun getTasksSortedByFieldOrDefault(field: String): List<Task> = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-
-        return TaskEntity.all()
+        TaskEntity.all()
             .orderBy(column to SortOrder.ASC)
             .filter { !it.isCompleted }
             .map { it.toDomain() }
     }
 
-    override fun getCompletedTasksSortedByFieldOrDefault(field: String): List<Task> {
+    override fun getCompletedTasksSortedByFieldOrDefault(field: String): List<Task> = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-
-        return TaskEntity.all()
+        TaskEntity.all()
             .orderBy(column to SortOrder.ASC)
             .filter { it.isCompleted }
             .map { it.toDomain() }
     }
 
-    override fun updateTask(task: TaskUpdate): Task {
+    override fun updateTask(task: TaskUpdate): Task = transaction {
         val updatedTask = TaskEntity.findByIdAndUpdate(task.id) {
             it.categoryId = EntityID(task.categoryId, CategoriesTable)
             it.priority = task.priority
             it.text = task.text
         } ?: throw TaskNotFound("task to update not found")
-
-        return updatedTask.toDomain()
+        updatedTask.toDomain()
     }
 
     override fun completeTask(taskId: Int) {
-        TaskEntity.findByIdAndUpdate(taskId) {
-            it.isCompleted = true
-            it.completedAt = LocalDateTime.now()
-        } ?: throw TaskNotFound("completed task not found")
+        transaction {
+            TaskEntity.findByIdAndUpdate(taskId) {
+                it.isCompleted = true
+                it.completedAt = LocalDateTime.now()
+            } ?: throw TaskNotFound("completed task not found")
+        }
     }
 }

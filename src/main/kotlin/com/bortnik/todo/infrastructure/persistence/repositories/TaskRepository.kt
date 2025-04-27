@@ -7,7 +7,7 @@ import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.TaskNotFound
 import com.bortnik.todo.domain.repositories.TaskRepository
 import com.bortnik.todo.infrastructure.persistence.entities.task.TaskEntity
-import com.bortnik.todo.infrastructure.persistence.entities.category.toDomain
+import com.bortnik.todo.infrastructure.persistence.entities.task.toDomain
 import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.TasksTable
 import org.jetbrains.exposed.dao.id.EntityID

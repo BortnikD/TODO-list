@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @ControllerAdvice
 class ExceptionsHandler {
@@ -42,6 +43,18 @@ class ExceptionsHandler {
             ApiError(
                 error = "Task Not Found",
                 message = ex.message ?: "task not found",
+                status = HttpStatus.NOT_FOUND,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(NoResourceFoundException::class)
+    fun handleNoResourceFoundException(ex: Exception, request: WebRequest?): ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "No Resource Found",
+                message = ex.message ?: "Not found",
                 status = HttpStatus.NOT_FOUND,
                 request = request!!
             )

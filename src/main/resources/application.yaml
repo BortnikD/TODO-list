@@ -9,3 +9,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   exposed:
     generate-ddl: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha

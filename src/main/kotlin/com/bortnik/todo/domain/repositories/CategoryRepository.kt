@@ -9,5 +9,5 @@ interface CategoryRepository {
 
     fun getCategoryById(categoryId: Int): Category?
 
-    fun deleteCategory(categoryId: Int)
+    fun deleteCategory(categoryId: Int, userId: Int)
 }

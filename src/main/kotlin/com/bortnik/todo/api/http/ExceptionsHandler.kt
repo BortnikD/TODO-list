@@ -1,8 +1,8 @@
 package com.bortnik.todo.api.http
 
-import com.bortnik.todo.domain.exceptions.CategoryNotFound
+import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
-import com.bortnik.todo.domain.exceptions.TaskNotFound
+import com.bortnik.todo.domain.exceptions.task.TaskNotFound
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice

@@ -1,4 +1,4 @@
-package com.bortnik.todo.domain.exceptions
+package com.bortnik.todo.domain.exceptions.category
 
 class CategoryNotFound: Exception {
     constructor(message: String): super(message)

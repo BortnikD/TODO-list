@@ -1,4 +1,4 @@
-package com.bortnik.todo.domain.exceptions
+package com.bortnik.todo.domain.exceptions.task
 
 class TaskNotFound: Exception {
     constructor(message: String): super(message)

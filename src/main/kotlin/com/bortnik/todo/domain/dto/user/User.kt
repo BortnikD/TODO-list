@@ -1,4 +1,4 @@
-package com.bortnik.todo.domain.dto
+package com.bortnik.todo.domain.dto.user
 
 data class UserCreate(
     val username: String,
@@ -9,5 +9,11 @@ data class UserCreate(
 data class UserPublic(
     val id: Int,
     val username: String,
+    val email: String?
+)
+
+data class UserUpdate(
+    val id: Int,
+    val username: String?,
     val email: String?
 )

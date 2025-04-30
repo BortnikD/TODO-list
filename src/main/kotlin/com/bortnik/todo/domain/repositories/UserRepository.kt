@@ -13,17 +13,17 @@ interface UserRepository {
     /**
      * get user by user id
      */
-    fun getById(userId: Int): User
+    fun getById(userId: Int): User?
 
     /**
      * get user by username
      */
-    fun getByUsername(username: String): User
+    fun getByUsername(username: String): User?
 
     /**
      * get user by email
      */
-    fun getByEmail(email: String): User
+    fun getByEmail(email: String): User?
 
     /**
      * delete user by user id

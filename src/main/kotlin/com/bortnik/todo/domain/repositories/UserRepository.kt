@@ -1,6 +1,7 @@
 package com.bortnik.todo.domain.repositories
 
-import com.bortnik.todo.domain.dto.UserCreate
+import com.bortnik.todo.domain.dto.user.UserCreate
+import com.bortnik.todo.domain.dto.user.UserUpdate
 import com.bortnik.todo.domain.entities.User
 
 interface UserRepository {
@@ -24,6 +25,11 @@ interface UserRepository {
      * get user by email
      */
     fun getByEmail(email: String): User?
+
+    /**
+     * Update user data
+     */
+    fun update(user: UserUpdate): User
 
     /**
      * delete user by user id

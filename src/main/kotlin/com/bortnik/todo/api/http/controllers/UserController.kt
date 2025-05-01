@@ -42,7 +42,7 @@ class UserController(
     }
 
     @DeleteMapping("/{userId}")
-    fun deleteUser(@RequestParam userId: Int) {
+    fun deleteUser(@PathVariable userId: Int) {
         deleteUserUseCase.deleteUser(userId)
     }
 }

@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.javatime.CurrentDateTime
 
 object TasksTable : IntIdTable("tasks") {
+    val userId = reference("user_id", UserTable)
     val categoryId = reference("category_id", CategoriesTable, ReferenceOption.CASCADE)
     val priority = integer("priority")
     val text = varchar("text", 256)

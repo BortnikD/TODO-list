@@ -6,5 +6,7 @@ fun User.toPublic() =
     UserPublic(
         id = this.id,
         username = this.username,
-        email = this.email
+        email = this.email,
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt
     )

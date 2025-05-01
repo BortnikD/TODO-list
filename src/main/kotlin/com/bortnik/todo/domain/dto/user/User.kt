@@ -1,5 +1,7 @@
 package com.bortnik.todo.domain.dto.user
 
+import java.time.LocalDateTime
+
 data class UserCreate(
     val username: String,
     val email: String?,
@@ -9,7 +11,9 @@ data class UserCreate(
 data class UserPublic(
     val id: Int,
     val username: String,
-    val email: String?
+    val email: String?,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )
 
 data class UserUpdate(

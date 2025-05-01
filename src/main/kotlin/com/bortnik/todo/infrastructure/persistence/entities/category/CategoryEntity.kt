@@ -9,5 +9,6 @@ class CategoryEntity(id: EntityID<Int>): IntEntity(id) {
 
     companion object : IntEntityClass<CategoryEntity>(CategoriesTable)
 
+    val userId by CategoriesTable.userId
     var name by CategoriesTable.name
 }

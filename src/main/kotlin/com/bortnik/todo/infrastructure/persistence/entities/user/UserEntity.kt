@@ -11,7 +11,7 @@ class UserEntity(id: EntityID<Int>): IntEntity(id) {
 
     var username by UserTable.username
     var email by UserTable.email
-    val hashedPassword by UserTable.hashedPassword
+    var hashedPassword by UserTable.hashedPassword
     var createdAt by UserTable.createdAt
     var updatedAt by UserTable.updatedAt
 }

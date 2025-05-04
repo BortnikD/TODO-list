@@ -9,6 +9,7 @@ class TaskEntity(id: EntityID<Int>): IntEntity(id) {
 
     companion object : IntEntityClass<TaskEntity>(TasksTable)
 
+    var userId by TasksTable.userId
     var categoryId by TasksTable.categoryId
     var priority by TasksTable.priority
     var text by TasksTable.text

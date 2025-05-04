@@ -1,6 +1,6 @@
-package com.bortnik.todo.domain.exceptions
+package com.bortnik.todo.domain.exceptions.user
 
-class CategoryNotFound: Exception {
+class UserAlreadyExists: Exception {
     constructor(message: String): super(message)
     constructor(message: String, cause: Throwable): super(message, cause)
 }

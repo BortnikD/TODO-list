@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 data class Task (
     val id: Int,
     val categoryId: Int,
+    val userId: Int,
     val priority: Int = 1,
     val text: String,
     val createdAt: LocalDateTime? = null,

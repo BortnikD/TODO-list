@@ -19,3 +19,7 @@ springdoc:
     enabled: true
     operationsSorter: method
     tagsSorter: alpha
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  expiration: 2592000 # 1 month

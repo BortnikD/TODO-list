@@ -4,7 +4,7 @@ import com.bortnik.todo.domain.dto.TaskCreate
 import com.bortnik.todo.domain.dto.TaskUpdate
 import com.bortnik.todo.domain.entities.Task
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
-import com.bortnik.todo.domain.exceptions.TaskNotFound
+import com.bortnik.todo.domain.exceptions.task.TaskNotFound
 import com.bortnik.todo.domain.repositories.TaskRepository
 import com.bortnik.todo.infrastructure.persistence.entities.task.TaskEntity
 import com.bortnik.todo.infrastructure.persistence.entities.task.toDomain

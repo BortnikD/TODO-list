@@ -2,7 +2,7 @@ package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.domain.dto.CategoryCreate
 import com.bortnik.todo.domain.entities.Category
-import com.bortnik.todo.domain.exceptions.CategoryNotFound
+import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.usecase.category.CreateCategoryUseCase
 import com.bortnik.todo.usecase.category.DeleteCategoryUseCase

@@ -21,3 +21,8 @@ data class UserUpdate(
     val username: String?,
     val email: String?
 )
+
+data class UserLogin(
+    val username: String,
+    val password: String
+)

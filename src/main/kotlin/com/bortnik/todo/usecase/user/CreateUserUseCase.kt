@@ -1,8 +1,7 @@
 package com.bortnik.todo.usecase.user
 
 import com.bortnik.todo.domain.dto.user.UserCreate
-import com.bortnik.todo.domain.dto.user.UserPublic
-import com.bortnik.todo.domain.dto.user.toPublic
+import com.bortnik.todo.domain.entities.User
 import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists
 import com.bortnik.todo.domain.repositories.UserRepository
 import org.springframework.stereotype.Service
@@ -23,8 +22,8 @@ class CreateUserUseCase(
         }
     }
 
-    fun save(user: UserCreate): UserPublic {
+    fun save(user: UserCreate): User {
         validateUserUniqueness(user)
-        return userRepository.save(user).toPublic()
+        return userRepository.save(user)
     }
 }

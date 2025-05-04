@@ -19,3 +19,7 @@ springdoc:
     enabled: true
     operationsSorter: method
     tagsSorter: alpha
+
+jwt:
+  secret: e0f2e96c4db84755b4d3a1fdc7f76c22b41b9e15a1e7086a90f4dc3a23b9afc9
+  expiration: 3600000

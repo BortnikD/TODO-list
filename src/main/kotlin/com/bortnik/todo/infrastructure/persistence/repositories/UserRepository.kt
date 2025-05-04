@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository
 @Repository
 class UserRepository: UserRepository {
 
-    override fun save(user: UserCreate): User {
-        return UserEntity.new {
+    override fun save(user: UserCreate): User = transaction{
+        UserEntity.new {
             username = user.username
             email = user.email
             hashedPassword = user.password

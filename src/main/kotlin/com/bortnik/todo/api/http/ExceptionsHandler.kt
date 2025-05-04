@@ -3,6 +3,9 @@ package com.bortnik.todo.api.http
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
+import com.bortnik.todo.domain.exceptions.user.AcceptError
+import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists
+import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -43,6 +46,42 @@ class ExceptionsHandler {
             ApiError(
                 error = "Task Not Found",
                 message = ex.message ?: "task not found",
+                status = HttpStatus.NOT_FOUND,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(AcceptError::class)
+    fun handleAcceptError(ex: Exception, request: WebRequest?):  ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "Accept Error",
+                message = ex.message ?: "You dont have access rights",
+                status = HttpStatus.FORBIDDEN,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(UserAlreadyExists::class)
+    fun handleUserAlreadyExists(ex: Exception, request: WebRequest?):  ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "User Already Exists",
+                message = ex.message ?: "User already exists",
+                status = HttpStatus.CONFLICT,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(UserNotFound::class)
+    fun handleUserNotFound(ex: Exception, request: WebRequest?):  ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "User Not Found",
+                message = ex.message ?: "user not found",
                 status = HttpStatus.NOT_FOUND,
                 request = request!!
             )

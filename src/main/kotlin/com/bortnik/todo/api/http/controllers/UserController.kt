@@ -8,6 +8,8 @@ import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.usecase.user.CreateUserUseCase
 import com.bortnik.todo.usecase.user.DeleteUserUseCase
 import com.bortnik.todo.usecase.user.GetUserUseCase
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,6 +26,12 @@ class UserController(
     private val createUserUseCase: CreateUserUseCase,
     private val deleteUserUseCase: DeleteUserUseCase
 ) {
+
+    @GetMapping("/me")
+    fun getMe(@AuthenticationPrincipal user: UserDetails): UserPublic {
+        return getUserUseCase.getByUsername(user.username)?.toPublic()
+            ?: throw UserNotFound("User not found by username '${user.username}'")
+    }
 
     @GetMapping("/{userId}")
     fun getUser(@PathVariable userId: Int): UserPublic {

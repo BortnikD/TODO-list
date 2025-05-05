@@ -1,12 +1,17 @@
 package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.domain.dto.CategoryCreate
+import com.bortnik.todo.domain.dto.CategoryCreateRequest
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
+import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.usecase.category.CreateCategoryUseCase
 import com.bortnik.todo.usecase.category.DeleteCategoryUseCase
 import com.bortnik.todo.usecase.category.GetCategoryUseCase
+import com.bortnik.todo.usecase.user.GetUserUseCase
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,23 +25,39 @@ import org.springframework.web.bind.annotation.RestController
 class CategoryController(
     private val createCategoryUseCase: CreateCategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
-    private val getCategoryUseCase: GetCategoryUseCase
+    private val getCategoryUseCase: GetCategoryUseCase,
+    private val getUserUseCase: GetUserUseCase
 ) {
 
     @PostMapping
-    fun addCategory(@RequestBody category: CategoryCreate): Category {
-        return createCategoryUseCase.addCategory(category)
+    fun addCategory(
+        @RequestBody category: CategoryCreateRequest,
+        @AuthenticationPrincipal user: UserDetails
+    ): Category {
+        val userId = getUserUseCase.getByUsername(user.username)?.id
+            ?: throw UserNotFound("Not found user with '${user.username}'")
+        val categoryWithUserId = CategoryCreate(userId, category.name)
+        return createCategoryUseCase.addCategory(categoryWithUserId)
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable categoryId: Int) {
+    fun deleteCategory(
+        @PathVariable categoryId: Int,
+        @AuthenticationPrincipal user: UserDetails
+    ) {
         if (categoryId <= 0) throw InvalidRequestField("category id must be greet then 0")
-        deleteCategoryUseCase.deleteCategory(categoryId)
+
+        val userId = getUserUseCase.getByUsername(user.username)?.id
+            ?: throw UserNotFound("Not found user with '${user.username}'")
+
+        deleteCategoryUseCase.deleteCategory(categoryId, userId)
     }
 
-    @GetMapping("/{categoryId}")
-    fun getCategoryById(@PathVariable categoryId: Int): Category {
-        if (categoryId <= 0) throw InvalidRequestField("category id must be greet then 0")
-        return getCategoryUseCase.getCategoryById(categoryId) ?: throw CategoryNotFound("category not found")
+    @GetMapping("/my")
+    fun getUserCategories(@AuthenticationPrincipal user: UserDetails): List<Category> {
+        val userId = getUserUseCase.getByUsername(user.username)?.id
+            ?: throw UserNotFound("Not found user with '${user.username}'")
+
+        return getCategoryUseCase.getUserCategories(userId) ?: throw CategoryNotFound("categories not found")
     }
 }

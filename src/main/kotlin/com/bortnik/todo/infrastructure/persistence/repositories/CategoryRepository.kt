@@ -6,6 +6,7 @@ import com.bortnik.todo.domain.exceptions.task.TaskNotFound
 import com.bortnik.todo.domain.repositories.CategoryRepository
 import com.bortnik.todo.infrastructure.persistence.entities.category.CategoryEntity
 import com.bortnik.todo.infrastructure.persistence.entities.category.toDomain
+import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
@@ -13,19 +14,23 @@ import org.springframework.stereotype.Repository
 class CategoryRepository: CategoryRepository {
 
     override fun addCategory(category: CategoryCreate): Category = transaction {
-        val entity = CategoryEntity.new {
+        CategoryEntity.new {
             name = category.name
-        }
-        entity.toDomain()
+        }.toDomain()
+    }
+
+    override fun getUserCategories(userId: Int): List<Category>? = transaction {
+        CategoryEntity
+            .find { CategoriesTable.userId eq userId }
+            .toList()
+            .map { it.toDomain() }
     }
 
     override fun getCategoryById(categoryId: Int): Category? = transaction {
-        val category = CategoryEntity.findById(categoryId)
-        category?.toDomain()
+        CategoryEntity.findById(categoryId)?.toDomain()
     }
 
     override fun deleteCategory(categoryId: Int) = transaction {
-        val entity = CategoryEntity.findById(categoryId) ?: throw TaskNotFound("Task not found")
-        entity.delete()
+        CategoryEntity.findById(categoryId)?.delete() ?: throw TaskNotFound("Task not found")
     }
 }

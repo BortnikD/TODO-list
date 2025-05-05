@@ -9,6 +9,10 @@ class GetCategoryUseCase(
     private val categoryRepository: CategoryRepository
 ) {
 
+    fun getUserCategories(userId: Int): List<Category>? {
+        return categoryRepository.getUserCategories(userId)
+    }
+
     fun getCategoryById(categoryId: Int): Category? {
         return categoryRepository.getCategoryById(categoryId)
     }

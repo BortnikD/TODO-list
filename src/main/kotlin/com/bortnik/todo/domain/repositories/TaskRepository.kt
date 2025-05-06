@@ -12,14 +12,19 @@ interface TaskRepository {
     fun addTask(task: TaskCreate): Task
 
     /**
+     * get task by id
+     */
+    fun getTaskById(taskId: Int): Task?
+
+    /**
      * Return sorted by field uncompleted tasks list, or unsorted list if field is null
      */
-    fun getTasksSortedByFieldOrDefault(field: String): List<Task>
+    fun getTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>?
 
     /**
      * Return sorted by field completed tasks list, or unsorted list if field is null
      */
-    fun getCompletedTasksSortedByFieldOrDefault(field: String): List<Task>
+    fun getCompletedTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>?
 
     /**
      * Update task by changed fields

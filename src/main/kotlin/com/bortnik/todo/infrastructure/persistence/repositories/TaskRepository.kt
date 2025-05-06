@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
+
 @Repository
 class TaskRepository: TaskRepository {
 
@@ -26,12 +27,11 @@ class TaskRepository: TaskRepository {
     )
 
     override fun addTask(task: TaskCreate): Task = transaction {
-        val newTask = TaskEntity.new {
+        TaskEntity.new {
             categoryId = EntityID(task.categoryId, CategoriesTable)
             priority = task.priority
             text = task.text
-        }
-        newTask.toDomain()
+        }.toDomain()
     }
 
     override fun getTasksSortedByFieldOrDefault(field: String): List<Task> = transaction {
@@ -51,12 +51,11 @@ class TaskRepository: TaskRepository {
     }
 
     override fun updateTask(task: TaskUpdate): Task = transaction {
-        val updatedTask = TaskEntity.findByIdAndUpdate(task.id) {
+        TaskEntity.findByIdAndUpdate(task.id) {
             it.categoryId = EntityID(task.categoryId, CategoriesTable)
             it.priority = task.priority
             it.text = task.text
-        } ?: throw TaskNotFound("task to update not found")
-        updatedTask.toDomain()
+        }?.toDomain() ?: throw TaskNotFound("task to update not found")
     }
 
     override fun completeTask(taskId: Int) {

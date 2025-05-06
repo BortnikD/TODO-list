@@ -12,6 +12,7 @@ import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.TasksTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -26,37 +27,43 @@ class TaskRepository: TaskRepository {
     )
 
     override fun addTask(task: TaskCreate): Task = transaction {
-        val newTask = TaskEntity.new {
+        TaskEntity.new {
             categoryId = EntityID(task.categoryId, CategoriesTable)
             priority = task.priority
             text = task.text
-        }
-        newTask.toDomain()
+        }.toDomain()
     }
 
-    override fun getTasksSortedByFieldOrDefault(field: String): List<Task> = transaction {
+    override fun getTaskById(taskId: Int): Task? = transaction {
+        TaskEntity.findById(taskId)?.toDomain()
+    }
+
+    override fun getTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-        TaskEntity.all()
+        TaskEntity.find {
+            (TasksTable.userId eq userId) and
+                    (TasksTable.isCompleted eq false)
+        }
             .orderBy(column to SortOrder.ASC)
-            .filter { !it.isCompleted }
             .map { it.toDomain() }
     }
 
-    override fun getCompletedTasksSortedByFieldOrDefault(field: String): List<Task> = transaction {
+    override fun getCompletedTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-        TaskEntity.all()
+        TaskEntity.find {
+            (TasksTable.userId eq userId) and
+                    (TasksTable.isCompleted eq true)
+        }
             .orderBy(column to SortOrder.ASC)
-            .filter { it.isCompleted }
             .map { it.toDomain() }
     }
 
     override fun updateTask(task: TaskUpdate): Task = transaction {
-        val updatedTask = TaskEntity.findByIdAndUpdate(task.id) {
+        TaskEntity.findByIdAndUpdate(task.id) {
             it.categoryId = EntityID(task.categoryId, CategoriesTable)
             it.priority = task.priority
             it.text = task.text
-        } ?: throw TaskNotFound("task to update not found")
-        updatedTask.toDomain()
+        }?.toDomain() ?: throw TaskNotFound("task to update not found")
     }
 
     override fun completeTask(taskId: Int) {

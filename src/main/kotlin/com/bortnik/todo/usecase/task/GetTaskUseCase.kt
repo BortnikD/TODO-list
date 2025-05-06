@@ -9,11 +9,11 @@ class GetTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
 
-    fun getTasksSortedByFieldOrDefault(field: String): List<Task> {
-        return taskRepository.getTasksSortedByFieldOrDefault(field)
+    fun getTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? {
+        return taskRepository.getTasksSortedByFieldOrDefault(field, userId)
     }
 
-    fun getCompletedTasksSortedByFieldOrDefault(field: String): List<Task> {
-        return taskRepository.getCompletedTasksSortedByFieldOrDefault(field)
+    fun getCompletedTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? {
+        return taskRepository.getCompletedTasksSortedByFieldOrDefault(field, userId)
     }
 }

@@ -3,7 +3,7 @@ spring:
     name: todo
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/todo
+    url: jdbc:postgresql://postgres:5432/todo
     username: postgres
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver

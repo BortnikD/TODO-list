@@ -1,4 +1,4 @@
-package com.bortnik.todo.infrastructure.security
+package com.bortnik.todo.infrastructure.security.user
 
 import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.domain.repositories.UserRepository

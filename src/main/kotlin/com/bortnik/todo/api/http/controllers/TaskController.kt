@@ -1,12 +1,12 @@
 package com.bortnik.todo.api.http.controllers
 
+import com.bortnik.todo.api.http.dto.TaskCreateRequest
 import com.bortnik.todo.domain.dto.TaskCreate
-import com.bortnik.todo.domain.dto.TaskCreateRequest
 import com.bortnik.todo.domain.dto.TaskUpdate
 import com.bortnik.todo.domain.entities.Task
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
-import com.bortnik.todo.domain.exceptions.user.UserNotFound
+import com.bortnik.todo.infrastructure.security.user.getUserId
 import com.bortnik.todo.usecase.task.CreateTaskUseCase
 import com.bortnik.todo.usecase.task.GetTaskUseCase
 import com.bortnik.todo.usecase.task.UpdateTaskUseCase
@@ -37,8 +37,7 @@ class TaskController(
         @RequestParam field: String = "priority",
         @AuthenticationPrincipal user: UserDetails
     ): List<Task> {
-        val userId = getUserUseCase.getByUsername(user.username)?.id
-            ?: throw UserNotFound("Not found user with username '$user.username'")
+        val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getTasksSortedByFieldOrDefault(field, userId)
             ?: throw TaskNotFound("Not found uncompleted tasks")
@@ -49,8 +48,7 @@ class TaskController(
         @RequestParam field: String = "priority",
         @AuthenticationPrincipal user: UserDetails
     ): List<Task> {
-        val userId = getUserUseCase.getByUsername(user.username)?.id
-            ?: throw UserNotFound("Not found user with username '$user.username'")
+        val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getCompletedTasksSortedByFieldOrDefault(field, userId)
             ?: throw TaskNotFound("Not found completed tasks")
@@ -61,8 +59,7 @@ class TaskController(
         @RequestBody task: TaskCreateRequest,
         @AuthenticationPrincipal user: UserDetails
     ): Task {
-        val userId = getUserUseCase.getByUsername(user.username)?.id
-            ?: throw UserNotFound("Not found user with username '$user.username'")
+        val userId = user.getUserId(getUserUseCase)
 
         if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
 
@@ -80,8 +77,7 @@ class TaskController(
         @RequestBody task: TaskUpdate,
         @AuthenticationPrincipal user: UserDetails
     ): Task {
-        val userId = getUserUseCase.getByUsername(user.username)?.id
-            ?: throw UserNotFound("Not found user with username '$user.username'")
+        val userId = user.getUserId(getUserUseCase)
 
         if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
 
@@ -93,8 +89,7 @@ class TaskController(
         @PathVariable taskId: Int,
         @AuthenticationPrincipal user: UserDetails
     ) {
-        val userId = getUserUseCase.getByUsername(user.username)?.id
-            ?: throw UserNotFound("Not found user with username '$user.username'")
+        val userId = user.getUserId(getUserUseCase)
 
         if (taskId <= 0) throw InvalidRequestField("task id must be greet then 0")
 

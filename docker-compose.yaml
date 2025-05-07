@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: spring_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: todo
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d todo" ]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy

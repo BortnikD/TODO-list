@@ -1,7 +1,7 @@
 package com.bortnik.todo.api.http.controllers
 
+import com.bortnik.todo.api.http.dto.TaskCreateRequest
 import com.bortnik.todo.domain.dto.TaskCreate
-import com.bortnik.todo.domain.dto.TaskCreateRequest
 import com.bortnik.todo.domain.dto.TaskUpdate
 import com.bortnik.todo.domain.entities.Task
 import com.bortnik.todo.domain.exceptions.InvalidRequestField

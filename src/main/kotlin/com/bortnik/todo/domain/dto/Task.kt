@@ -7,12 +7,6 @@ data class TaskCreate(
     val text: String,
 )
 
-data class TaskCreateRequest (
-    val categoryId: Int,
-    val priority: Int = 1,
-    val text: String,
-)
-
 data class TaskUpdate(
     val id: Int,
     val categoryId: Int,

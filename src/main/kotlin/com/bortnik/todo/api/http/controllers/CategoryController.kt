@@ -1,7 +1,7 @@
 package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.domain.dto.CategoryCreate
-import com.bortnik.todo.domain.dto.CategoryCreateRequest
+import com.bortnik.todo.api.http.dto.CategoryCreateRequest
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField

@@ -10,13 +10,13 @@ fun generatePagesLinks(
     val previousPage = if (offset - limit < 0) {
         null
     } else {
-        "$path&offset=${offset - limit}&limit=$limit"
+        "${path}offset=${offset - limit}&limit=$limit"
     }
 
     val nextPage = if (offset + limit > count) {
         null
     } else {
-        "$path&offset=${offset + limit}&limit=$limit"
+        "${path}offset=${offset + limit}&limit=$limit"
     }
 
     return Pair(previousPage, nextPage)

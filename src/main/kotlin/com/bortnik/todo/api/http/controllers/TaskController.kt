@@ -40,6 +40,7 @@ class TaskController(
         @RequestParam limit: Int?,
         @AuthenticationPrincipal user: UserDetails
     ): PaginatedResponse<Task> {
+        validatePagination(offset, limit)
         val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getPaginatedUncompletedTasks(field, userId, offset ?: 0, limit ?: 10)
@@ -52,6 +53,7 @@ class TaskController(
         @RequestParam limit: Int?,
         @AuthenticationPrincipal user: UserDetails
     ): PaginatedResponse<Task> {
+        validatePagination(offset, limit)
         val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getPaginatedCompletedTasks(field, userId, offset ?: 0, limit ?: 10)
@@ -98,5 +100,18 @@ class TaskController(
         if (taskId <= 0) throw InvalidRequestField("task id must be greet then 0")
 
         return updateTaskUseCase.completeTask(taskId, userId)
+    }
+
+    fun validatePagination(offset: Long?, limit: Int?) {
+        offset?.let { value ->
+            if (value < 0) {
+                throw InvalidRequestField("offset value must by greet or equal 0")
+            }
+        }
+        limit?.let { value ->
+            if (value < 0) {
+                throw InvalidRequestField("offset value must by greet or equal 0")
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ class GetTaskUseCase(
         limit: Int = 10
     ): PaginatedResponse<Task> = transaction {
         val count = taskRepository.getCount(field, userId)
-        val basePath = "$baseUrl/tasks?field=$field"
+        val basePath = "$baseUrl/tasks?field=${field}&"
         val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
 
         PaginatedResponse<Task>(

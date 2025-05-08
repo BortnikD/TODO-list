@@ -1,5 +1,6 @@
 package com.bortnik.todo.api.http.controllers
 
+import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.UserApiDocs
 import com.bortnik.todo.domain.dto.user.UserPublic
 import com.bortnik.todo.domain.dto.user.toPublic
@@ -32,8 +33,8 @@ class UserController(
 
     @GetMapping("/{userId}")
     override fun getUser(@PathVariable userId: Int): UserPublic {
-        if (userId < 0) {
-            throw InvalidRequestField("user id must be greet or equal 0")
+        if (userId <= 0) {
+            throw InvalidRequestField("user id must be greet then 0")
         }
         return getUserUseCase.getById(userId)?.toPublic()
             ?: throw UserAlreadyExists("user with id $userId is not exist")
@@ -42,7 +43,7 @@ class UserController(
     @GetMapping
     override fun getUserByUsernameOrEmail(@RequestParam usernameOrEmail: String): UserPublic {
         if (usernameOrEmail.length < 3 || usernameOrEmail.length > 64) {
-            throw InvalidRequestField("username of email is too long or short")
+            throw BadCredentials("username of email is too long or short")
         }
         return getUserUseCase.getByUsername(usernameOrEmail)?.toPublic()
             ?: getUserUseCase.getByEmail(usernameOrEmail)?.toPublic()
@@ -51,8 +52,8 @@ class UserController(
 
     @DeleteMapping("/{userId}")
     override fun deleteUser(@PathVariable userId: Int) {
-        if (userId < 0) {
-            throw InvalidRequestField("user id must be greet or equal 0")
+        if (userId <= 0) {
+            throw InvalidRequestField("user id must be greet then 0")
         }
         deleteUserUseCase.deleteUser(userId)
     }

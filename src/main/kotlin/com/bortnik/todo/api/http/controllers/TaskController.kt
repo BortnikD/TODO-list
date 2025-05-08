@@ -1,6 +1,7 @@
 package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.api.http.dto.TaskCreateRequest
+import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.TaskApiDocs
 import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.dto.TaskCreate
@@ -41,6 +42,7 @@ class TaskController(
         @AuthenticationPrincipal user: UserDetails
     ): PaginatedResponse<Task> {
         validatePagination(offset, limit)
+        validateField(field)
         val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getPaginatedUncompletedTasks(field, userId, offset ?: 0, limit ?: 10)
@@ -54,10 +56,10 @@ class TaskController(
         @AuthenticationPrincipal user: UserDetails
     ): PaginatedResponse<Task> {
         validatePagination(offset, limit)
+        validateField(field)
         val userId = user.getUserId(getUserUseCase)
 
         return getTaskUseCase.getPaginatedCompletedTasks(field, userId, offset ?: 0, limit ?: 10)
-
     }
 
     @PostMapping
@@ -65,9 +67,9 @@ class TaskController(
         @RequestBody task: TaskCreateRequest,
         @AuthenticationPrincipal user: UserDetails
     ): Task {
-        val userId = user.getUserId(getUserUseCase)
+        validateTask(task.priority, task.categoryId, task.text)
 
-        if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
+        val userId = user.getUserId(getUserUseCase)
 
         val taskWithUserId = TaskCreate(
             userId = userId,
@@ -83,9 +85,11 @@ class TaskController(
         @RequestBody task: TaskUpdate,
         @AuthenticationPrincipal user: UserDetails
     ): Task {
+        if (task.id < 1) {
+            throw InvalidRequestField("priority must be greet then 0")
+        }
+        validateTask(task.priority, task.categoryId, task.text)
         val userId = user.getUserId(getUserUseCase)
-
-        if (task.priority <= 0) throw InvalidRequestField("priority must be greet then 0")
 
         return updateTaskUseCase.updateTask(task, userId)
     }
@@ -95,9 +99,10 @@ class TaskController(
         @PathVariable taskId: Int,
         @AuthenticationPrincipal user: UserDetails
     ) {
+        if (taskId < 1) {
+            throw InvalidRequestField("task id must be greet then 0")
+        }
         val userId = user.getUserId(getUserUseCase)
-
-        if (taskId <= 0) throw InvalidRequestField("task id must be greet then 0")
 
         return updateTaskUseCase.completeTask(taskId, userId)
     }
@@ -112,6 +117,24 @@ class TaskController(
             if (value < 0) {
                 throw InvalidRequestField("offset value must by greet or equal 0")
             }
+        }
+    }
+
+    fun validateField(field: String) {
+        if (field !in arrayOf("created_at, priority, category")) {
+            throw InvalidRequestField("search field must be in this list [created_at, priority, category]")
+        }
+    }
+
+    fun validateTask(priority: Int, categoryId: Int, text: String) {
+        if (priority < 1) {
+            throw BadCredentials("priority must be greet then 0")
+        }
+        else if (categoryId < 1) {
+            throw BadCredentials("category id must be greet then 0")
+        }
+        else if (text.length < 3 || text.length > 256) {
+            throw BadCredentials("text is too long or short")
         }
     }
 }

@@ -36,26 +36,42 @@ class TaskRepository: TaskRepository {
         }.toDomain()
     }
 
+    override fun getCount(field: String, userId: Int): Long = transaction {
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .count()
+    }
+
     override fun getTaskById(taskId: Int): Task? = transaction {
         TaskEntity.findById(taskId)?.toDomain()
     }
 
-    override fun getTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
+    override fun getTasksSortedByFieldOrDefault(
+        field: String,
+        offset: Long,
+        limit: Int,
+        userId: Int
+    ): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-        TaskEntity.find {
-            (TasksTable.userId eq userId) and
-                    (TasksTable.isCompleted eq false)
-        }
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .limit(limit, offset)
             .orderBy(column to SortOrder.ASC)
             .map { it.toDomain() }
     }
 
-    override fun getCompletedTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
+    override fun getCompletedTasksSortedByFieldOrDefault(
+        field: String,
+        offset: Long,
+        limit: Int,
+        userId: Int
+    ): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
         TaskEntity.find {
             (TasksTable.userId eq userId) and
                     (TasksTable.isCompleted eq true)
         }
+            .limit(limit, offset)
             .orderBy(column to SortOrder.ASC)
             .map { it.toDomain() }
     }

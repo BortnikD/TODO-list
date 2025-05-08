@@ -10,6 +10,7 @@ import com.bortnik.todo.infrastructure.persistence.entities.task.TaskEntity
 import com.bortnik.todo.infrastructure.persistence.entities.task.toDomain
 import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.TasksTable
+import com.bortnik.todo.infrastructure.persistence.tables.UserTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
@@ -29,6 +30,7 @@ class TaskRepository: TaskRepository {
     override fun addTask(task: TaskCreate): Task = transaction {
         TaskEntity.new {
             categoryId = EntityID(task.categoryId, CategoriesTable)
+            userId = EntityID(task.userId, UserTable)
             priority = task.priority
             text = task.text
         }.toDomain()

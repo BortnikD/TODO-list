@@ -1,6 +1,7 @@
 package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.api.http.exceptions.BadCredentials
+import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/auth")
 class AuthController(
     private val authService: AuthService
-) {
+): AuthApiDocs {
 
     @PostMapping("/register")
-    fun register(@RequestBody user: UserCreate): AuthResponse {
+    override fun register(@RequestBody user: UserCreate): AuthResponse {
         if (user.username.length < 3 || user.username.length > 64) {
             throw BadCredentials("username is too long or short")
         }
@@ -36,7 +37,7 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun authenticate(@RequestBody user: UserLogin): AuthResponse {
+    override fun authenticate(@RequestBody user: UserLogin): AuthResponse {
         if (user.username.length < 3 || user.username.length > 64) {
             throw BadCredentials("username is too long or short")
         }

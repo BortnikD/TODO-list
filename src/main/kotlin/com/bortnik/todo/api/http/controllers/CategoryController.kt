@@ -2,6 +2,7 @@ package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.domain.dto.CategoryCreate
 import com.bortnik.todo.api.http.dto.CategoryCreateRequest
+import com.bortnik.todo.api.http.openapi.controllers.CategoryApiDocs
 import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
@@ -21,10 +22,10 @@ class CategoryController(
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val getCategoryUseCase: GetCategoryUseCase,
     private val getUserUseCase: GetUserUseCase
-) {
+): CategoryApiDocs {
 
     @PostMapping
-    fun addCategory(
+    override fun addCategory(
         @RequestBody category: CategoryCreateRequest,
         @AuthenticationPrincipal user: UserDetails
     ): Category {
@@ -35,7 +36,7 @@ class CategoryController(
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(
+    override fun deleteCategory(
         @PathVariable categoryId: Int,
         @AuthenticationPrincipal user: UserDetails
     ) {
@@ -47,7 +48,7 @@ class CategoryController(
     }
 
     @GetMapping("/my")
-    fun getUserCategories(
+    override fun getUserCategories(
         @RequestParam offset: Long?,
         @RequestParam limit: Int?,
         @AuthenticationPrincipal user: UserDetails

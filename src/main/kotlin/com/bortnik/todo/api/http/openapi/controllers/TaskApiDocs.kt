@@ -25,7 +25,8 @@ interface TaskApiDocs {
 
     @Operation(
         summary = "Get uncompleted tasks",
-        description = "Returns a list of uncompleted tasks sorted by the specified field",
+        description = "Returns a list of completed tasks sorted by the specified field, " +
+                "field examples = created_at, priority, category",
         parameters = [
             Parameter(
                 name = "field",
@@ -76,7 +77,8 @@ interface TaskApiDocs {
 
     @Operation(
         summary = "Get completed tasks",
-        description = "Returns a list of completed tasks sorted by the specified field",
+        description = "Returns a list of completed tasks sorted by the specified field, " +
+                "field examples = created_at, priority, category",
         responses = [
             ApiResponse(
                 responseCode = "200",

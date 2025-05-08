@@ -22,6 +22,9 @@ class AuthController(
             throw BadCredentials("username is too long or short")
         }
         user.email?.let { email ->
+            if(email.length < 5 || email.length > 64) {
+                throw BadCredentials("email is too long or short")
+            }
             if(!Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$").matches(email)) {
                 throw BadCredentials("incorrect email")
             }

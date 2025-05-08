@@ -22,9 +22,14 @@ class CategoryRepository: CategoryRepository {
         }.toDomain()
     }
 
-    override fun getUserCategories(userId: Int): List<Category>? = transaction {
+    override fun getCount(userId: Int): Long = transaction {
+        CategoryEntity.find { CategoriesTable.userId eq userId }.count()
+    }
+
+    override fun getUserCategories(userId: Int, offset: Long, limit: Int): List<Category>? = transaction {
         CategoryEntity
             .find { CategoriesTable.userId eq userId }
+            .limit(limit, offset)
             .toList()
             .map { it.toDomain() }
     }

@@ -23,3 +23,5 @@ springdoc:
 jwt:
   secret: ${JWT_SECRET_KEY}
   expiration: 2592000 # 1 month
+
+base-url: http://localhost:8080

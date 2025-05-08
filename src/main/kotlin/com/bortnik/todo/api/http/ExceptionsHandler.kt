@@ -1,5 +1,6 @@
 package com.bortnik.todo.api.http
 
+import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
@@ -34,6 +35,18 @@ class ExceptionsHandler {
             ApiError(
                 error = "Invalid Request Field",
                 message = ex.message ?: "invalid request",
+                status = HttpStatus.BAD_REQUEST,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(BadCredentials::class)
+    fun handleBadCredentials(ex: BadCredentials, request: WebRequest?): ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "Bad Credentials",
+                message = ex.message ?: "Bad Credentials",
                 status = HttpStatus.BAD_REQUEST,
                 request = request!!
             )

@@ -7,7 +7,9 @@ interface CategoryRepository {
 
     fun addCategory(category: CategoryCreate): Category
 
-    fun getUserCategories(userId: Int): List<Category>?
+    fun getCount(userId: Int): Long
+
+    fun getUserCategories(userId: Int, offset: Long, limit: Int): List<Category>?
 
     fun getCategoryById(categoryId: Int): Category?
 

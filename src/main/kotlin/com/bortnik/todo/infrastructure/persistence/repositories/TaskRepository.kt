@@ -10,6 +10,7 @@ import com.bortnik.todo.infrastructure.persistence.entities.task.TaskEntity
 import com.bortnik.todo.infrastructure.persistence.entities.task.toDomain
 import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.TasksTable
+import com.bortnik.todo.infrastructure.persistence.tables.UserTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
@@ -29,31 +30,48 @@ class TaskRepository: TaskRepository {
     override fun addTask(task: TaskCreate): Task = transaction {
         TaskEntity.new {
             categoryId = EntityID(task.categoryId, CategoriesTable)
+            userId = EntityID(task.userId, UserTable)
             priority = task.priority
             text = task.text
         }.toDomain()
+    }
+
+    override fun getCount(field: String, userId: Int): Long = transaction {
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .count()
     }
 
     override fun getTaskById(taskId: Int): Task? = transaction {
         TaskEntity.findById(taskId)?.toDomain()
     }
 
-    override fun getTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
+    override fun getTasksSortedByFieldOrDefault(
+        field: String,
+        offset: Long,
+        limit: Int,
+        userId: Int
+    ): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-        TaskEntity.find {
-            (TasksTable.userId eq userId) and
-                    (TasksTable.isCompleted eq false)
-        }
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .limit(limit, offset)
             .orderBy(column to SortOrder.ASC)
             .map { it.toDomain() }
     }
 
-    override fun getCompletedTasksSortedByFieldOrDefault(field: String, userId: Int): List<Task>? = transaction {
+    override fun getCompletedTasksSortedByFieldOrDefault(
+        field: String,
+        offset: Long,
+        limit: Int,
+        userId: Int
+    ): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
         TaskEntity.find {
             (TasksTable.userId eq userId) and
                     (TasksTable.isCompleted eq true)
         }
+            .limit(limit, offset)
             .orderBy(column to SortOrder.ASC)
             .map { it.toDomain() }
     }

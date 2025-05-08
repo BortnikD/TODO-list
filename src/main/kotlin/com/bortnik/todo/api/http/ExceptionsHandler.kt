@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.resource.NoResourceFoundException
+import org.springframework.security.authentication.BadCredentialsException
 
 @ControllerAdvice
 class ExceptionsHandler {
@@ -108,6 +109,18 @@ class ExceptionsHandler {
                 error = "No Resource Found",
                 message = ex.message ?: "Not found",
                 status = HttpStatus.NOT_FOUND,
+                request = request!!
+            )
+        )
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(ex: Exception, request: WebRequest?): ResponseEntity<ApiError> {
+        return buildResponseEntity(
+            ApiError(
+                error = "Bad Credentials Exception",
+                message = ex.message ?: "Bad Credentials Exception",
+                status = HttpStatus.FORBIDDEN,
                 request = request!!
             )
         )

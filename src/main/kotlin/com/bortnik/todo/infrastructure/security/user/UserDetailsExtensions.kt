@@ -6,5 +6,5 @@ import org.springframework.security.core.userdetails.UserDetails
 
 fun UserDetails.getUserId(getUserUseCase: GetUserUseCase): Int {
     return getUserUseCase.getByUsername(this.username)?.id
-        ?: throw UserNotFound("Not found user with username '$this.username'")
+        ?: throw UserNotFound("Not found user with username '${this.username}'")
 }

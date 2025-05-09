@@ -34,7 +34,7 @@ class UserController(
     @GetMapping("/{userId}")
     override fun getUser(@PathVariable userId: Int): UserPublic {
         if (userId <= 0) {
-            throw InvalidRequestField("user id must be greet then 0")
+            throw InvalidRequestField("user id must be greater than 0")
         }
         return getUserUseCase.getById(userId)?.toPublic()
             ?: throw UserAlreadyExists("user with id $userId is not exist")
@@ -53,7 +53,7 @@ class UserController(
     @DeleteMapping("/{userId}")
     override fun deleteUser(@PathVariable userId: Int) {
         if (userId <= 0) {
-            throw InvalidRequestField("user id must be greet then 0")
+            throw InvalidRequestField("user id must be greater than 0")
         }
         deleteUserUseCase.deleteUser(userId)
     }

@@ -86,7 +86,7 @@ class TaskController(
         @AuthenticationPrincipal user: UserDetails
     ): Task {
         if (task.id < 1) {
-            throw InvalidRequestField("priority must be greet then 0")
+            throw InvalidRequestField("priority must be greater than 0")
         }
         validateTask(task.priority, task.categoryId, task.text)
         val userId = user.getUserId(getUserUseCase)
@@ -100,38 +100,38 @@ class TaskController(
         @AuthenticationPrincipal user: UserDetails
     ) {
         if (taskId < 1) {
-            throw InvalidRequestField("task id must be greet then 0")
+            throw InvalidRequestField("task id must be greater than 0")
         }
         val userId = user.getUserId(getUserUseCase)
 
         return updateTaskUseCase.completeTask(taskId, userId)
     }
 
-    fun validatePagination(offset: Long?, limit: Int?) {
+    private fun validatePagination(offset: Long?, limit: Int?) {
         offset?.let { value ->
             if (value < 0) {
-                throw InvalidRequestField("offset value must by greet or equal 0")
+                throw InvalidRequestField("offset value must by greater or equal to 0")
             }
         }
         limit?.let { value ->
             if (value < 0) {
-                throw InvalidRequestField("offset value must by greet or equal 0")
+                throw InvalidRequestField("offset value must by greater or equal to 0")
             }
         }
     }
 
-    fun validateField(field: String) {
+    private fun validateField(field: String) {
         if (field !in arrayOf("created_at, priority, category")) {
             throw InvalidRequestField("search field must be in this list [created_at, priority, category]")
         }
     }
 
-    fun validateTask(priority: Int, categoryId: Int, text: String) {
+    private fun validateTask(priority: Int, categoryId: Int, text: String) {
         if (priority < 1) {
-            throw BadCredentials("priority must be greet then 0")
+            throw BadCredentials("priority must be greater than 0")
         }
         else if (categoryId < 1) {
-            throw BadCredentials("category id must be greet then 0")
+            throw BadCredentials("category id must be greater than 0")
         }
         else if (text.length < 3 || text.length > 256) {
             throw BadCredentials("text is too long or short")

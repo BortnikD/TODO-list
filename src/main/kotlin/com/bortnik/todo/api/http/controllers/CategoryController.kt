@@ -45,7 +45,7 @@ class CategoryController(
         @AuthenticationPrincipal user: UserDetails
     ) {
         if (categoryId <= 0) {
-            throw InvalidRequestField("category id must be greet 0")
+            throw InvalidRequestField("category id must be greater to 0")
         }
 
         val userId = user.getUserId(getUserUseCase)
@@ -68,12 +68,12 @@ class CategoryController(
     fun validatePagination(offset: Long?, limit: Int?) {
         offset?.let { value ->
             if (value < 0) {
-                throw InvalidRequestField("offset value must by greet or equal 0")
+                throw InvalidRequestField("offset value must by greater or equal to 0")
             }
         }
         limit?.let { value ->
             if (value < 0) {
-                throw InvalidRequestField("offset value must by greet or equal 0")
+                throw InvalidRequestField("offset value must by greater or equal to 0")
             }
         }
     }

@@ -31,7 +31,7 @@ class AuthController(
             }
         }
         if (user.password.length < 8) {
-            throw BadCredentials("password length must be greater or equal 8")
+            throw BadCredentials("password length must be greater or equal to 8")
         }
         return authService.register(user)
     }
@@ -42,7 +42,7 @@ class AuthController(
             throw BadCredentials("username is too long or short")
         }
         if (user.password.length < 8) {
-            throw BadCredentials("password length must be greater or equal 8")
+            throw BadCredentials("password length must be greater or equal to 8")
         }
         return authService.authentication(user)
     }

@@ -14,7 +14,7 @@ class CreateTaskUseCase(
     private val getCategoryUseCase: GetCategoryUseCase
 ) {
 
-    @CacheEvict(value = ["tasks.uncompleted"])
+    @CacheEvict(value = ["tasks.uncompleted", "tasks.search"], allEntries = true)
     fun addTask(task: TaskCreate): Task {
         getCategoryUseCase.getCategoryById(task.categoryId) ?: throw CategoryNotFound("Category not found")
         return taskRepository.addTask(task)

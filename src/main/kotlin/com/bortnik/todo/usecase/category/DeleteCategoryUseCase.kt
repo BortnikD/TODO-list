@@ -11,7 +11,7 @@ class DeleteCategoryUseCase(
     private val categoryRepository: CategoryRepository
 ) {
 
-    @CacheEvict(value = ["category.byId", "categories.byUserId"])
+    @CacheEvict(value = ["category.byId", "categories.byUserId"], allEntries = true)
     fun deleteCategory(categoryId: Int, userId: Int) {
         val category = categoryRepository.getCategoryById(categoryId)
             ?: throw CategoryNotFound("category to delete with id '$categoryId' not found")

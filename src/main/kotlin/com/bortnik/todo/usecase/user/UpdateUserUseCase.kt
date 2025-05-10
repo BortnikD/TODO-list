@@ -11,7 +11,7 @@ class UpdateUserUseCase(
     private val userRepository: UserRepository
 ) {
 
-    @CacheEvict(value = ["user.byId", "user.byUsername", "user.byEmail"])
+    @CacheEvict(value = ["user.byId", "user.byUsername", "user.byEmail"], allEntries = true)
     fun update(user: UserUpdate): User {
         return userRepository.update(user)
     }

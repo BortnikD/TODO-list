@@ -16,7 +16,7 @@ class UpdateTaskUseCase(
     private val getCategoryUseCase: GetCategoryUseCase
 ) {
 
-    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed"])
+    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed", "tasks.search"], allEntries = true)
     fun updateTask(task: TaskUpdate, userId: Int): Task {
         getCategoryUseCase.getCategoryById(task.categoryId)
             ?: throw CategoryNotFound("Category not found")
@@ -25,7 +25,7 @@ class UpdateTaskUseCase(
         return taskRepository.updateTask(task)
     }
 
-    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed"])
+    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed", "tasks.search"], allEntries = true)
     fun completeTask(taskId: Int, userId: Int) {
         validateTask(taskId, userId)
         return taskRepository.completeTask(taskId)

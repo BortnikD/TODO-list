@@ -9,6 +9,7 @@ import com.bortnik.todo.infrastructure.persistence.entities.category.toDomain
 import com.bortnik.todo.infrastructure.persistence.tables.CategoriesTable
 import com.bortnik.todo.infrastructure.persistence.tables.UserTable
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
@@ -24,6 +25,13 @@ class CategoryRepository: CategoryRepository {
 
     override fun getCount(userId: Int): Long = transaction {
         CategoryEntity.find { CategoriesTable.userId eq userId }.count()
+    }
+
+    override fun getCategoryByUserIdAndName(userId: Int, name: String): Category? = transaction {
+        CategoryEntity
+            .find { (CategoriesTable.userId eq userId) and (CategoriesTable.name eq name) }
+            .firstOrNull()
+            ?.toDomain()
     }
 
     override fun getUserCategories(userId: Int, offset: Long, limit: Int): List<Category>? = transaction {

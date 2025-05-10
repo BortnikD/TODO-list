@@ -7,6 +7,7 @@ import com.bortnik.todo.domain.exceptions.task.TaskNotFound
 import com.bortnik.todo.domain.exceptions.user.AcceptError
 import com.bortnik.todo.domain.repositories.TaskRepository
 import com.bortnik.todo.usecase.category.GetCategoryUseCase
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,6 +16,7 @@ class UpdateTaskUseCase(
     private val getCategoryUseCase: GetCategoryUseCase
 ) {
 
+    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed"])
     fun updateTask(task: TaskUpdate, userId: Int): Task {
         getCategoryUseCase.getCategoryById(task.categoryId)
             ?: throw CategoryNotFound("Category not found")
@@ -23,6 +25,7 @@ class UpdateTaskUseCase(
         return taskRepository.updateTask(task)
     }
 
+    @CacheEvict(value = ["tasks.uncompleted", "tasks.completed"])
     fun completeTask(taskId: Int, userId: Int) {
         validateTask(taskId, userId)
         return taskRepository.completeTask(taskId)

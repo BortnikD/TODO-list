@@ -53,7 +53,7 @@ class AuthController(
         if (username.length < 3 || username.length > 64) {
             throw BadCredentials("username is too long or short")
         }
-        if (!Regex("^[A-Za-z0-9_]+$").matches(username)) {
+        if (!isEmail(username) && !Regex("^[A-Za-z0-9_]+$").matches(username)) {
             throw BadCredentials("username can contains only latin characters, digits, and '_'")
         }
         if (password.length < 8) {

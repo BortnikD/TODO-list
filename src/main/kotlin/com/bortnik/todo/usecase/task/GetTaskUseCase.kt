@@ -7,6 +7,7 @@ import com.bortnik.todo.usecase.generatePagesLinks
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 
 
 @Service
@@ -33,6 +34,7 @@ class GetTaskUseCase(
         return taskRepository.getCompletedTasksSortedByFieldOrDefault(field, offset, limit, userId)
     }
 
+    @Cacheable(value = ["tasks.uncompleted"], key = "#field + '_' + #userId + '_' + #offset + '_' + #limit")
     fun getPaginatedUncompletedTasks(
         field: String,
         userId: Int,
@@ -51,6 +53,7 @@ class GetTaskUseCase(
         )
     }
 
+    @Cacheable(value = ["tasks.completed"], key = "#field + '_' + #userId + '_' + #offset + '_' + #limit")
     fun getPaginatedCompletedTasks(
         field: String,
         userId: Int,

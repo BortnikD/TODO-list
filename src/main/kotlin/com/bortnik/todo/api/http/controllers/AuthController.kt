@@ -19,31 +19,30 @@ class AuthController(
 
     @PostMapping("/register")
     override fun register(@RequestBody user: UserCreate): AuthResponse {
-        if (user.username.length < 3 || user.username.length > 64) {
-            throw BadCredentials("username is too long or short")
-        }
+        validateUserLogin(user.username, user.password)
         user.email?.let { email ->
             if(email.length < 5 || email.length > 64) {
                 throw BadCredentials("email is too long or short")
             }
-            if(!Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$").matches(email)) {
+            if(!Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(email)) {
                 throw BadCredentials("incorrect email")
             }
-        }
-        if (user.password.length < 8) {
-            throw BadCredentials("password length must be greater or equal to 8")
         }
         return authService.register(user)
     }
 
     @PostMapping("/login")
     override fun authenticate(@RequestBody user: UserLogin): AuthResponse {
-        if (user.username.length < 3 || user.username.length > 64) {
+        validateUserLogin(user.username, user.password)
+        return authService.authentication(user)
+    }
+
+    private fun validateUserLogin(username: String, password: String) {
+        if (username.length < 3 || username.length > 64) {
             throw BadCredentials("username is too long or short")
         }
-        if (user.password.length < 8) {
+        if (password.length < 8) {
             throw BadCredentials("password length must be greater or equal to 8")
         }
-        return authService.authentication(user)
     }
 }

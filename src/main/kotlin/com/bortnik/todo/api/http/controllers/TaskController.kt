@@ -85,9 +85,7 @@ class TaskController(
         @RequestBody task: TaskUpdate,
         @AuthenticationPrincipal user: UserDetails
     ): Task {
-        if (task.id < 1) {
-            throw InvalidRequestField("priority must be greater than 0")
-        }
+        validateTaskId(task.id)
         validateTask(task.priority, task.categoryId, task.text)
         val userId = user.getUserId(getUserUseCase)
 
@@ -99,9 +97,7 @@ class TaskController(
         @PathVariable taskId: Int,
         @AuthenticationPrincipal user: UserDetails
     ) {
-        if (taskId < 1) {
-            throw InvalidRequestField("task id must be greater than 0")
-        }
+        validateTaskId(taskId)
         val userId = user.getUserId(getUserUseCase)
 
         return updateTaskUseCase.completeTask(taskId, userId)
@@ -135,6 +131,12 @@ class TaskController(
         }
         else if (text.length < 3 || text.length > 256) {
             throw BadCredentials("text is too long or short")
+        }
+    }
+
+    private fun validateTaskId(taskId: Int) {
+        if (taskId < 1) {
+            throw InvalidRequestField("task id must be greater than 0")
         }
     }
 }

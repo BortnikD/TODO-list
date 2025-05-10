@@ -9,7 +9,7 @@ class DeleteUserUseCase(
     private val userRepository: UserRepository
 ) {
 
-    @CacheEvict(value = ["user.byId", "user.byUsername", "user.byEmail"])
+    @CacheEvict(value = ["user.byId", "user.byUsername", "user.byEmail"], allEntries = true)
     fun deleteUser(userId: Int) {
         userRepository.delete(userId)
     }

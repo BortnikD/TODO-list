@@ -14,6 +14,7 @@ import com.bortnik.todo.infrastructure.persistence.tables.UserTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -36,9 +37,17 @@ class TaskRepository: TaskRepository {
         }.toDomain()
     }
 
-    override fun getCount(field: String, userId: Int): Long = transaction {
+    override fun getTasksCountByUserId(userId: Int): Long = transaction {
         TaskEntity
             .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .count()
+    }
+
+    override fun getTasksCountByText(userId: Int, text: String): Long = transaction {
+        val escaped = escapedText(text)
+
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.text like "%$escaped%") }
             .count()
     }
 
@@ -67,12 +76,19 @@ class TaskRepository: TaskRepository {
         userId: Int
     ): List<Task>? = transaction {
         val column = sortableFields[field] ?: throw InvalidRequestField("Unsupported field: $field")
-        TaskEntity.find {
-            (TasksTable.userId eq userId) and
-                    (TasksTable.isCompleted eq true)
-        }
+        TaskEntity
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq true) }
             .limit(limit, offset)
             .orderBy(column to SortOrder.ASC)
+            .map { it.toDomain() }
+    }
+
+    override fun searchTasksByText(value: String, userId: Int, offset: Long, limit: Int): List<Task>? = transaction {
+        val escaped = escapedText(value)
+
+        TaskEntity
+            .find { (TasksTable.text.lowerCase() like "%${escaped}%") and (TasksTable.userId eq userId) }
+            .limit(limit, offset)
             .map { it.toDomain() }
     }
 
@@ -91,5 +107,12 @@ class TaskRepository: TaskRepository {
                 it.completedAt = LocalDateTime.now()
             } ?: throw TaskNotFound("completed task not found")
         }
+    }
+
+    private fun escapedText(value: String): String {
+        return value
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_")
     }
 }

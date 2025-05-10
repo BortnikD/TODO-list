@@ -41,16 +41,12 @@ class GetTaskUseCase(
         offset: Long = 0,
         limit: Int = 10
     ): PaginatedResponse<Task> = transaction {
-        val count = taskRepository.getCount(field, userId)
+        val count = taskRepository.getTasksCountByUserId(userId)
         val basePath = "$baseUrl/tasks?field=${field}&"
         val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
+        val results = getTasksSortedByFieldOrDefault(field, userId, offset, limit)
 
-        PaginatedResponse<Task>(
-            count = count,
-            previousPage = pagesLinks.first,
-            nextPage = pagesLinks.second,
-            results = getTasksSortedByFieldOrDefault(field, userId, offset, limit)
-        )
+        buildPaginatedResponse(count, pagesLinks, results)
     }
 
     @Cacheable(value = ["tasks.completed"], key = "#field + '_' + #userId + '_' + #offset + '_' + #limit")
@@ -60,15 +56,39 @@ class GetTaskUseCase(
         offset: Long = 0,
         limit: Int = 10
     ): PaginatedResponse<Task> = transaction {
-        val count = taskRepository.getCount(field, userId)
-        val basePath = "$baseUrl/tasks/completed?field=$field"
+        val count = taskRepository.getTasksCountByUserId(userId)
+        val basePath = "$baseUrl/tasks/completed?field=$field&"
         val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
+        val results = getCompletedTasksSortedByFieldOrDefault(field, userId, offset, limit)
 
-        PaginatedResponse<Task>(
+        buildPaginatedResponse(count, pagesLinks, results)
+    }
+
+    @Cacheable(value = ["tasks.search"], key = "#value + '_' + #userId + '_' + #offset + '_' + #limit")
+    fun searchTasksByText(
+        value: String,
+        userId: Int,
+        offset: Long = 0,
+        limit: Int = 5
+    ): PaginatedResponse<Task> = transaction {
+        val count = taskRepository.getTasksCountByText(userId, value)
+        val basePath = "$baseUrl/tasks/search?value=$value&"
+        val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
+        val results = taskRepository.searchTasksByText(value, userId, offset, limit)
+
+        buildPaginatedResponse(count, pagesLinks, results)
+    }
+
+    private fun buildPaginatedResponse(
+        count: Long,
+        pagesLinks: Pair<String?, String?>,
+        results: List<Task>?
+    ): PaginatedResponse<Task> {
+        return PaginatedResponse(
             count = count,
             previousPage = pagesLinks.first,
             nextPage = pagesLinks.second,
-            results = getCompletedTasksSortedByFieldOrDefault(field, userId, offset, limit)
+            results = results
         )
     }
 }

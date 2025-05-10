@@ -103,6 +103,21 @@ class TaskController(
         return updateTaskUseCase.completeTask(taskId, userId)
     }
 
+    @GetMapping("/search")
+    override fun searchTasksByText(
+        @RequestBody value: String,
+        @RequestParam offset: Long?,
+        @RequestParam limit: Int?,
+        @AuthenticationPrincipal user: UserDetails
+    ): PaginatedResponse<Task> {
+        if (value.length !in 3..512) {
+            throw InvalidRequestField("text value length must be greater than 3 and less than 512")
+        }
+        val userId = user.getUserId(getUserUseCase)
+
+        return getTaskUseCase.searchTasksByText(value, userId, offset ?: 0, limit ?: 5)
+    }
+
     private fun validatePagination(offset: Long?, limit: Int?) {
         offset?.let { value ->
             if (value < 0) {

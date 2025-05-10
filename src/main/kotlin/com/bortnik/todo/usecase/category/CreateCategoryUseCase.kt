@@ -12,7 +12,7 @@ class CreateCategoryUseCase(
     private val categoryRepository: CategoryRepository
 ) {
 
-    @CacheEvict(value = ["categories.byUserId"])
+    @CacheEvict(value = ["categories.byUserId"], allEntries = true)
     fun addCategory(category: CategoryCreate): Category {
         if (categoryRepository.getCategoryByUserIdAndName(category.userId, category.name) != null) {
             throw CategoryAlreadyExists("category with name '${category.name}' already exists")

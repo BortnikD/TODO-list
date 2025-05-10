@@ -11,8 +11,16 @@ interface TaskRepository {
      */
     fun addTask(task: TaskCreate): Task
 
+    /**
+     * get tasks count by user id
+     */
+    fun getTasksCountByUserId(userId: Int): Long
 
-    fun getCount(field: String, userId: Int): Long
+    /**
+     * get tasks count by user id and text to search
+     */
+    fun getTasksCountByText(userId: Int, text: String): Long
+
     /**
      * get task by id
      */
@@ -27,6 +35,11 @@ interface TaskRepository {
      * Return sorted by field completed tasks list, or unsorted list if field is null
      */
     fun getCompletedTasksSortedByFieldOrDefault(field: String, offset: Long, limit: Int, userId: Int): List<Task>?
+
+    /**
+     * search tasks by substring of task text
+     */
+    fun searchTasksByText(value: String, userId: Int, offset: Long, limit: Int): List<Task>?
 
     /**
      * Update task by changed fields

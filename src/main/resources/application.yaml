@@ -4,9 +4,9 @@ spring:
 
   datasource:
     # for prod
-    url: jdbc:postgresql://postgres:5432/todo
+#    url: jdbc:postgresql://postgres:5432/todo
     # for development
-#    url: jdbc:postgresql://localhost:5432/todo
+    url: jdbc:postgresql://localhost:5432/todo
     username: postgres
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -16,9 +16,9 @@ spring:
   data:
     redis:
       # for prod
-#      host: redis
+      host: redis
       # for development
-      host: localhost
+#      host: localhost
       port: 6379
 
 springdoc:

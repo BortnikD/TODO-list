@@ -5,7 +5,9 @@ import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
+import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.usecase.AuthService
+import com.bortnik.todo.usecase.user.GetUserUseCase
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/auth")
 class AuthController(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val getUserUseCase: GetUserUseCase
 ): AuthApiDocs {
 
     @PostMapping("/register")
@@ -24,7 +27,7 @@ class AuthController(
             if(email.length < 5 || email.length > 64) {
                 throw BadCredentials("email is too long or short")
             }
-            if(!Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(email)) {
+            if(!isEmail(email)) {
                 throw BadCredentials("incorrect email")
             }
         }
@@ -34,12 +37,24 @@ class AuthController(
     @PostMapping("/login")
     override fun authenticate(@RequestBody user: UserLogin): AuthResponse {
         validateUserLogin(user.username, user.password)
+        if (isEmail(user.username)) {
+            val usernameByEmail = getUserUseCase.getByEmail(user.username)?.username
+                ?: throw UserNotFound("user with this filed '${user.username}' does not exists")
+            return authService.authentication(user.copy(username = usernameByEmail))
+        }
         return authService.authentication(user)
+    }
+
+    private fun isEmail(field: String): Boolean {
+        return Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(field)
     }
 
     private fun validateUserLogin(username: String, password: String) {
         if (username.length < 3 || username.length > 64) {
             throw BadCredentials("username is too long or short")
+        }
+        if (!Regex("^[A-Za-z0-9_]+$").matches(username)) {
+            throw BadCredentials("username can contains only latin characters, digits, and '_'")
         }
         if (password.length < 8) {
             throw BadCredentials("password length must be greater or equal to 8")

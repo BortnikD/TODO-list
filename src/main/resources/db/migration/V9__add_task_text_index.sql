@@ -1,0 +1,1 @@
+CREATE INDEX idx_tasks_text ON tasks(text);

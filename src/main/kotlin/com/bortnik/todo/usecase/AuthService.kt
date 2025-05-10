@@ -34,14 +34,20 @@ class AuthService(
     }
 
     fun authentication(user: UserLogin): AuthResponse {
-        getUserUseCase.getByUsername(user.username)
-            ?: throw UserNotFound("Not found user to login with '${user.username}'")
+        val username = if (Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(user.username)) {
+            getUserUseCase.getByEmail(user.username)?.username
+                ?: throw UserNotFound("user with this email '${user.username}' does not exists")
+        } else {
+            getUserUseCase.getByUsername(user.username)?.username
+                ?: throw UserNotFound("Not found user to login with username '${user.username}'")
+        }
+
         authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(user.username, user.password)
+            UsernamePasswordAuthenticationToken(username, user.password)
         )
-        val userDetails = userDetailsService.loadUserByUsername(user.username)
+        val userDetails = userDetailsService.loadUserByUsername(username)
         val token = jwtUtil.generateToken(userDetails)
 
-        return AuthResponse(token, user.username)
+        return AuthResponse(token, username)
     }
 }

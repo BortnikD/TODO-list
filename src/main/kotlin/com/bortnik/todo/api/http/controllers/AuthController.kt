@@ -5,9 +5,7 @@ import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
-import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.usecase.AuthService
-import com.bortnik.todo.usecase.user.GetUserUseCase
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/auth")
 class AuthController(
-    private val authService: AuthService,
-    private val getUserUseCase: GetUserUseCase
+    private val authService: AuthService
 ): AuthApiDocs {
 
     @PostMapping("/register")
@@ -37,11 +34,6 @@ class AuthController(
     @PostMapping("/login")
     override fun authenticate(@RequestBody user: UserLogin): AuthResponse {
         validateUserLogin(user.username, user.password)
-        if (isEmail(user.username)) {
-            val usernameByEmail = getUserUseCase.getByEmail(user.username)?.username
-                ?: throw UserNotFound("user with this filed '${user.username}' does not exists")
-            return authService.authentication(user.copy(username = usernameByEmail))
-        }
         return authService.authentication(user)
     }
 

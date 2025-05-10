@@ -122,14 +122,6 @@ interface TaskApiDocs {
     @Operation(
         summary = "Add a task",
         description = "Creates a new task for the current user",
-        parameters = [
-            Parameter(
-                name = "field",
-                `in` = ParameterIn.QUERY,
-                description = "Field to sort by (default is 'priority')",
-                example = "priority"
-            )
-        ],
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -259,4 +251,56 @@ interface TaskApiDocs {
         @Parameter(description = "Task ID") taskId: Int,
         @Parameter(hidden = true) user: UserDetails
     )
+
+    @Operation(
+        summary = "Search tasks by text",
+        description = "Searches for tasks containing the specified text. Returns a list of tasks that match the search criteria.",
+        parameters = [
+            Parameter(
+                name = "value",
+                `in` = ParameterIn.QUERY,
+                description = "Text to search for in task titles or descriptions.",
+                required = true,
+                example = "meeting"
+            )
+        ],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "List of tasks matching the search text",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = TaskPaginatedResponse::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid request parameter",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "No tasks found matching the search text",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            )
+        ]
+    )
+    fun searchTasksByText(
+        @RequestParam value: String,
+        @RequestParam offset: Long?,
+        @RequestParam limit: Int?,
+        @Parameter(hidden = true) user: UserDetails,
+    ): PaginatedResponse<Task>
 }

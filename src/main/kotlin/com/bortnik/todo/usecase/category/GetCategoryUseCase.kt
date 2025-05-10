@@ -6,6 +6,7 @@ import com.bortnik.todo.domain.repositories.CategoryRepository
 import com.bortnik.todo.usecase.generatePagesLinks
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,10 +19,12 @@ class GetCategoryUseCase(
         return categoryRepository.getUserCategories(userId, offset, limit)
     }
 
+    @Cacheable(value = ["category.byId"], key = "#categoryId")
     fun getCategoryById(categoryId: Int): Category? {
         return categoryRepository.getCategoryById(categoryId)
     }
 
+    @Cacheable(value = ["categories.byUserId"], key = "#userId + '_' + #offset + '_' + #limit")
     fun getPaginatedUserCategories(userId: Int, offset: Long, limit: Int): PaginatedResponse<Category> = transaction {
         val count = categoryRepository.getCount(userId)
         val basePath = "$baseUrl/categories/my?"

@@ -117,7 +117,7 @@ class TaskController(
     }
 
     private fun validateField(field: String) {
-        if (field !in arrayOf("created_at, priority, category")) {
+        if (field !in arrayOf("created_at", "priority", "category")) {
             throw InvalidRequestField("search field must be in this list [created_at, priority, category]")
         }
     }

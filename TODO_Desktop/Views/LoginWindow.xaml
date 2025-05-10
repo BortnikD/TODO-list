@@ -1,0 +1,17 @@
+﻿<Window x:Class="TODO_Desktop.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TODO_Desktop"
+        Title="Login" Height="370" Width="300">
+    <StackPanel Margin="20">
+        <Label x:Name="LabelUsername" Content="Username"></Label>
+        <TextBox x:Name="UsernameBox" Text="Username" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" Margin="0 10"/>
+        <Label x:Name="LabelEmail" Content="Email"></Label>
+        <TextBox x:Name="EmailBox" Text="Email" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" Margin="0 10"/>
+        <Label x:Name="LabelPassword" Content="Password"></Label>
+        <PasswordBox x:Name="PasswordBox" Margin="0 10"/>
+        <Button Content="Login" Click="Login_Click" Margin="0 5"/>
+        <Button Content="Register" Click="Register_Click" Margin="0 5"/>
+        <!--<TextBlock x:Name="StatusBlock" Foreground="Red" Margin="0 10"/>-->
+    </StackPanel>
+</Window>

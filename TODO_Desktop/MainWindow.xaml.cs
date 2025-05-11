@@ -26,14 +26,6 @@ public partial class MainWindow : Window
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        if (!_apiClient.IsAuthorized)
-        {
-            MessageBox.Show("Not authorized!");
-            this.Close();
-            return;
-        }
-
-        var data = await _apiClient.GetProtectedDataAsync();
-        MessageBox.Show("Protected data: " + data);
+        
     }
 }

@@ -127,16 +127,7 @@ interface UserApiDocs {
 
     @Operation(
         summary = "Delete a user",
-        description = "Deletes a user account by their unique ID.",
-        parameters = [
-            Parameter(
-                name = "userId",
-                `in` = ParameterIn.PATH,
-                description = "ID of the user to delete",
-                required = true,
-                example = "123"
-            )
-        ],
+        description = "Delete user who called",
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -164,5 +155,5 @@ interface UserApiDocs {
             )
         ]
     )
-    fun deleteUser(@PathVariable userId: Int)
+    fun deleteUser(@Parameter(hidden = true) user: UserDetails)
 }

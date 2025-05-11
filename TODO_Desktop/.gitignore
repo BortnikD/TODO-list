@@ -1,0 +1,47 @@
+﻿# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Visual Studio Code
+.vscode/
+
+# Mac OS files
+.DS_Store
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+packages/
+*.snupkg
+
+# Dotnet tools
+.tools/
+
+# Logs
+*.log
+
+# Other files
+*.dbmdl
+
+# Test results
+TestResults/
+*.TestResults/
+
+# Temporary files
+*.tmp
+*.temp

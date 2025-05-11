@@ -1,15 +1,22 @@
 services:
-  redis:
-    image: redis:7
-    container_name: redis_cache
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    container_name: dragonfly_cache
     restart: always
     ports:
       - "6379:6379"
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       retries: 5
       timeout: 3s
+    environment:
+      - DRAGONFLY_MEMORY_LIMIT=4gb
+      - DRAGONFLY_PROACTIVE_THREADS=4
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
 
   postgres:
     image: postgres:13
@@ -40,5 +47,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      dragonfly:
         condition: service_healthy
+

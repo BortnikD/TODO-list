@@ -4,7 +4,6 @@ import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.entities.Task
 import com.bortnik.todo.domain.repositories.TaskRepository
 import com.bortnik.todo.usecase.generatePagesLinks
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -16,37 +15,23 @@ class GetTaskUseCase(
     @Value("\${base-url}") private val baseUrl: String
 ) {
 
-    fun getTasksSortedByFieldOrDefault(
-        field: String,
-        userId: Int,
-        offset: Long = 0,
-        limit: Int = 10
-    ): List<Task>? {
-        return taskRepository.getTasksSortedByFieldOrDefault(field, offset, limit, userId)
-    }
-
-    fun getCompletedTasksSortedByFieldOrDefault(
-        field: String,
-        userId: Int,
-        offset: Long = 0,
-        limit: Int = 10
-    ): List<Task>? {
-        return taskRepository.getCompletedTasksSortedByFieldOrDefault(field, offset, limit, userId)
-    }
-
     @Cacheable(value = ["tasks.uncompleted"], key = "#field + '_' + #userId + '_' + #offset + '_' + #limit")
     fun getPaginatedUncompletedTasks(
         field: String,
         userId: Int,
         offset: Long = 0,
         limit: Int = 10
-    ): PaginatedResponse<Task> = transaction {
-        val count = taskRepository.getTasksCountByUserId(userId)
-        val basePath = "$baseUrl/tasks?field=${field}&"
-        val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
-        val results = getTasksSortedByFieldOrDefault(field, userId, offset, limit)
-
-        buildPaginatedResponse(count, pagesLinks, results)
+    ): PaginatedResponse<Task> {
+        val count = taskRepository.getTasksCountByUserId(userId, false)
+        val path = "?field=${field}&"
+        val results = taskRepository.getTasksSortedByFieldOrDefault(field, offset, limit, userId)
+        return buildPaginatedResponse(
+            count = count,
+            offset = offset,
+            limit = limit,
+            results = results,
+            path = path
+        )
     }
 
     @Cacheable(value = ["tasks.completed"], key = "#field + '_' + #userId + '_' + #offset + '_' + #limit")
@@ -55,13 +40,17 @@ class GetTaskUseCase(
         userId: Int,
         offset: Long = 0,
         limit: Int = 10
-    ): PaginatedResponse<Task> = transaction {
-        val count = taskRepository.getTasksCountByUserId(userId)
-        val basePath = "$baseUrl/tasks/completed?field=$field&"
-        val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
-        val results = getCompletedTasksSortedByFieldOrDefault(field, userId, offset, limit)
-
-        buildPaginatedResponse(count, pagesLinks, results)
+    ): PaginatedResponse<Task> {
+        val count = taskRepository.getTasksCountByUserId(userId, true)
+        val path = "/completed?field=$field&"
+        val results = taskRepository.getCompletedTasksSortedByFieldOrDefault(field, offset, limit, userId)
+        return buildPaginatedResponse(
+            count = count,
+            offset = offset,
+            limit = limit,
+            results = results,
+            path = path
+        )
     }
 
     @Cacheable(value = ["tasks.search"], key = "#value + '_' + #userId + '_' + #offset + '_' + #limit")
@@ -70,20 +59,28 @@ class GetTaskUseCase(
         userId: Int,
         offset: Long = 0,
         limit: Int = 5
-    ): PaginatedResponse<Task> = transaction {
+    ): PaginatedResponse<Task> {
         val count = taskRepository.getTasksCountByText(userId, value)
-        val basePath = "$baseUrl/tasks/search?value=$value&"
-        val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
+        val path = "/search?value=$value&"
         val results = taskRepository.searchTasksByText(value, userId, offset, limit)
-
-        buildPaginatedResponse(count, pagesLinks, results)
+        return buildPaginatedResponse(
+            count = count,
+            offset = offset,
+            limit = limit,
+            results = results,
+            path = path
+        )
     }
 
     private fun buildPaginatedResponse(
         count: Long,
-        pagesLinks: Pair<String?, String?>,
-        results: List<Task>?
+        offset: Long,
+        limit: Int,
+        results: List<Task>?,
+        path: String
     ): PaginatedResponse<Task> {
+        val basePath = "$baseUrl/tasks${path}"
+        val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
         return PaginatedResponse(
             count = count,
             previousPage = pagesLinks.first,

@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:TODO_Desktop"
              >
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/LightTheme.xaml"/>
+                <!-- Можно изначально Light, а потом менять на DarkTheme.xaml программно -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

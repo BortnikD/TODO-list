@@ -7,6 +7,7 @@ import com.bortnik.todo.domain.dto.user.toPublic
 import com.bortnik.todo.domain.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists
 import com.bortnik.todo.domain.exceptions.user.UserNotFound
+import com.bortnik.todo.infrastructure.security.user.getUserId
 import com.bortnik.todo.usecase.user.DeleteUserUseCase
 import com.bortnik.todo.usecase.user.GetUserUseCase
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -48,8 +49,9 @@ class UserController(
             ?: throw UserNotFound("User not found by '$usernameOrEmail'")
     }
 
-    @DeleteMapping("/{userId}")
-    override fun deleteUser(@PathVariable userId: Int) {
+    @DeleteMapping("/deleteMyself")
+    override fun deleteUser(@AuthenticationPrincipal user: UserDetails) {
+        val userId = user.getUserId(getUserUseCase)
         validateUserId(userId)
         deleteUserUseCase.deleteUser(userId)
     }

@@ -4,20 +4,20 @@ fun generatePagesLinks(
     offset: Long,
     limit: Int,
     count: Long,
-    path: String
+    basePath: String
 ): Pair<String?, String?> {
 
-    val previousPage = if (offset - limit < 0) {
-        null
-    } else {
-        "${path}offset=${offset - limit}&limit=$limit"
+    fun buildUrl(newOffset: Long): String {
+        val encodedPath = if (basePath.contains("?")) {
+            "${basePath}offset=$newOffset&limit=$limit"
+        } else {
+            "${basePath}offset=$newOffset&limit=$limit"
+        }
+        return encodedPath
     }
 
-    val nextPage = if (offset + limit > count) {
-        null
-    } else {
-        "${path}offset=${offset + limit}&limit=$limit"
-    }
+    val previousPage = if (offset > 0) buildUrl(maxOf(0, offset - limit)) else null
+    val nextPage = if (offset + limit < count) buildUrl(offset + limit) else null
 
-    return Pair(previousPage, nextPage)
+    return previousPage to nextPage
 }

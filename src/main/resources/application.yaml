@@ -16,7 +16,7 @@ spring:
   data:
     redis:
       # for prod
-      host: redis
+      host: dragonfly
       # for development
 #      host: localhost
       port: 6379

@@ -14,7 +14,7 @@ interface TaskRepository {
     /**
      * get tasks count by user id
      */
-    fun getTasksCountByUserId(userId: Int): Long
+    fun getTasksCountByUserId(userId: Int, isCompleted: Boolean): Long
 
     /**
      * get tasks count by user id and text to search

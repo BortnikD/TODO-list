@@ -37,9 +37,9 @@ class TaskRepository: TaskRepository {
         }.toDomain()
     }
 
-    override fun getTasksCountByUserId(userId: Int): Long = transaction {
+    override fun getTasksCountByUserId(userId: Int, isCompleted: Boolean): Long = transaction {
         TaskEntity
-            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq false) }
+            .find { (TasksTable.userId eq userId) and (TasksTable.isCompleted eq isCompleted) }
             .count()
     }
 

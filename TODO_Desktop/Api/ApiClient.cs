@@ -49,12 +49,28 @@ public class ApiClient
                 }
                 return false;
             }
-            _lastErrorMessage = null;
-            return response.IsSuccessStatusCode;
+
+            var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            _jwtToken = auth?.Token;
+
+            if (!string.IsNullOrEmpty(_jwtToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _jwtToken);
+
+                _lastErrorMessage = null;
+                return true;
+            }
+            else
+            {
+                _lastErrorMessage = "Token not found in registration response.";
+                return false;
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Exception: {ex.Message}");
+            _lastErrorMessage = ex.Message;
             return false;
         }
     }
@@ -101,11 +117,5 @@ public class ApiClient
     }
 
     public bool IsAuthorized => !string.IsNullOrEmpty(_jwtToken);
-
-    // пример запроса с авторизацией
-    public async Task<string> GetProtectedDataAsync()
-    {
-        var response = await _httpClient.GetAsync("api/protected");
-        return await response.Content.ReadAsStringAsync();
-    }
+    
 }

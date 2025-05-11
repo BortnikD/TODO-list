@@ -126,7 +126,7 @@ class TaskController(
         }
         limit?.let { value ->
             if (value < 0) {
-                throw InvalidRequestField("offset value must by greater or equal to 0")
+                throw InvalidRequestField("limit value must by greater or equal to 0")
             }
         }
     }

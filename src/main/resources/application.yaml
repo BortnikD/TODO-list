@@ -16,9 +16,9 @@ spring:
   data:
     redis:
       # for prod
-#      host: redis
+      host: redis
       # for development
-      host: localhost
+#      host: localhost
       port: 6379
 
 springdoc:

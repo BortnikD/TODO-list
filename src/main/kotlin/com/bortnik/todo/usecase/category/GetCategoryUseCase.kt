@@ -4,7 +4,6 @@ import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.repositories.CategoryRepository
 import com.bortnik.todo.usecase.generatePagesLinks
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
@@ -15,25 +14,21 @@ class GetCategoryUseCase(
     @Value("\${base-url}") private val baseUrl: String
 ) {
 
-    private fun getUserCategories(userId: Int, offset: Long, limit: Int): List<Category>? {
-        return categoryRepository.getUserCategories(userId, offset, limit)
-    }
-
     @Cacheable(value = ["category.byId"], key = "#categoryId")
     fun getCategoryById(categoryId: Int): Category? {
         return categoryRepository.getCategoryById(categoryId)
     }
 
     @Cacheable(value = ["categories.byUserId"], key = "#userId + '_' + #offset + '_' + #limit")
-    fun getPaginatedUserCategories(userId: Int, offset: Long, limit: Int): PaginatedResponse<Category> = transaction {
+    fun getPaginatedUserCategories(userId: Int, offset: Long, limit: Int): PaginatedResponse<Category> {
         val count = categoryRepository.getCount(userId)
         val basePath = "$baseUrl/categories/my?"
         val pagesLinks = generatePagesLinks(offset, limit, count, basePath)
-        PaginatedResponse(
+        return PaginatedResponse(
             count = count,
             previousPage = pagesLinks.first,
             nextPage = pagesLinks.second,
-            results = getUserCategories(userId, offset, limit)
+            results = categoryRepository.getUserCategories(userId, offset, limit)
         )
     }
 }

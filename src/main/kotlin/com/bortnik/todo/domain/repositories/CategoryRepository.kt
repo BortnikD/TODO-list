@@ -1,6 +1,7 @@
 package com.bortnik.todo.domain.repositories
 
 import com.bortnik.todo.domain.dto.CategoryCreate
+import com.bortnik.todo.domain.dto.CategoryUpdate
 import com.bortnik.todo.domain.entities.Category
 
 interface CategoryRepository {
@@ -16,4 +17,6 @@ interface CategoryRepository {
     fun getCategoryById(categoryId: Int): Category?
 
     fun deleteCategory(categoryId: Int)
+
+    fun updateCategory(category: CategoryUpdate): Category
 }

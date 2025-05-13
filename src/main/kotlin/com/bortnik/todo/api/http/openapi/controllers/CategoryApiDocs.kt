@@ -1,6 +1,7 @@
 package com.bortnik.todo.api.http.openapi.controllers
 
 import com.bortnik.todo.api.http.dto.CategoryCreateRequest
+import com.bortnik.todo.api.http.dto.CategoryUpdateRequest
 import com.bortnik.todo.api.http.openapi.schemas.ApiErrorDoc
 import com.bortnik.todo.api.http.openapi.schemas.CategoryPaginatedResponse
 import com.bortnik.todo.domain.dto.PaginatedResponse
@@ -163,4 +164,55 @@ interface CategoryApiDocs {
         @RequestParam limit: Int?,
         @Parameter(hidden = true) user: UserDetails
     ): PaginatedResponse<Category>
+
+    @Operation(
+        summary = "Update a category",
+        description = "Update category for the authenticated user",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Category successfully updated",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = Category::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid request body",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "403",
+                description = "Accept error",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Category not found",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            )
+        ]
+    )
+    fun updateUserCategories(
+        @RequestBody categoryUpdateRequest: CategoryUpdateRequest,
+        @Parameter(hidden = true) user: UserDetails
+    ): Category
 }

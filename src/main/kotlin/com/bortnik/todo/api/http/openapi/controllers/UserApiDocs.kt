@@ -1,5 +1,6 @@
 package com.bortnik.todo.api.http.openapi.controllers
 
+import com.bortnik.todo.api.http.dto.UserUpdateRequest
 import com.bortnik.todo.api.http.openapi.schemas.ApiErrorDoc
 import com.bortnik.todo.domain.dto.user.UserPublic
 import io.swagger.v3.oas.annotations.Operation
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 
 @Tag(name = "Users", description = "API for managing user accounts")
@@ -156,4 +158,43 @@ interface UserApiDocs {
         ]
     )
     fun deleteUser(@Parameter(hidden = true) user: UserDetails)
+
+    @Operation(
+        summary = "Update user information",
+        description = "Updates the authenticated user's username or email. At least one field must be provided.",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "User information retrieved successfully",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = UserPublic::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Validation error",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ApiErrorDoc::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized - Bearer token missing or invalid",
+                content = [Content(schema = Schema(implementation = ApiErrorDoc::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "User not found",
+                content = [Content(schema = Schema(implementation = ApiErrorDoc::class))]
+            )
+        ]
+    )
+    fun updateUser(
+        @RequestBody userUpdateRequest: UserUpdateRequest,
+        @Parameter(hidden = true) user: UserDetails
+    ): UserPublic
 }

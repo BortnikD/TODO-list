@@ -38,7 +38,7 @@ class CacheConfig {
         objectMapper: ObjectMapper
     ) = RedisCacheConfiguration
         .defaultCacheConfig()
-        .disableCachingNullValues()
+//        .disableCachingNullValues()
         .entryTtl(Duration.ofMinutes(10))
         .prefixCacheNameWith("todo:")
         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(StringRedisSerializer()))

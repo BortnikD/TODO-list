@@ -8,7 +8,7 @@ import com.bortnik.todo.api.http.openapi.controllers.CategoryApiDocs
 import com.bortnik.todo.domain.dto.CategoryUpdate
 import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.entities.Category
-import com.bortnik.todo.domain.exceptions.InvalidRequestField
+import com.bortnik.todo.api.http.exceptions.InvalidRequestField
 import com.bortnik.todo.infrastructure.security.user.getUserId
 import com.bortnik.todo.usecase.category.CreateCategoryUseCase
 import com.bortnik.todo.usecase.category.DeleteCategoryUseCase

@@ -1,4 +1,4 @@
-package com.bortnik.todo.domain.exceptions
+package com.bortnik.todo.api.http.exceptions
 
 class InvalidRequestField: Exception {
     constructor(message: String): super(message)

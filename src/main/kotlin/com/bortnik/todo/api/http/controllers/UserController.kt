@@ -8,7 +8,7 @@ import com.bortnik.todo.api.http.validators.user.UsernameValidator
 import com.bortnik.todo.domain.dto.user.UserPublic
 import com.bortnik.todo.domain.dto.user.UserUpdate
 import com.bortnik.todo.domain.dto.user.toPublic
-import com.bortnik.todo.domain.exceptions.InvalidRequestField
+import com.bortnik.todo.api.http.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists
 import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import com.bortnik.todo.infrastructure.security.user.getDomainUser

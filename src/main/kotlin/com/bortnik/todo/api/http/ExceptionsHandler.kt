@@ -2,7 +2,7 @@ package com.bortnik.todo.api.http
 
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
-import com.bortnik.todo.domain.exceptions.InvalidRequestField
+import com.bortnik.todo.api.http.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
 import com.bortnik.todo.domain.exceptions.user.AcceptError
 import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists

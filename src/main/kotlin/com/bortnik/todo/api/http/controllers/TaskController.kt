@@ -7,7 +7,7 @@ import com.bortnik.todo.domain.dto.PaginatedResponse
 import com.bortnik.todo.domain.dto.TaskCreate
 import com.bortnik.todo.domain.dto.TaskUpdate
 import com.bortnik.todo.domain.entities.Task
-import com.bortnik.todo.domain.exceptions.InvalidRequestField
+import com.bortnik.todo.api.http.exceptions.InvalidRequestField
 import com.bortnik.todo.infrastructure.security.user.getUserId
 import com.bortnik.todo.usecase.task.CreateTaskUseCase
 import com.bortnik.todo.usecase.task.GetTaskUseCase

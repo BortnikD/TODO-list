@@ -69,15 +69,22 @@ class AuthControllerTests {
 
     @Test
     fun `register should throws BadCredentials when email is incorrect`() {
-        listOf(
-            validUserCreate.copy(email = "wrongEmail"),
-            validUserCreate.copy(email = "wrong@email"),
-            validUserCreate.copy(email = "wrong@email."),
-            validUserCreate.copy(email = "@email.com")
-        ).forEach { user ->
-            val exception = assertThrows<BadCredentials> { controller.register(user) }
-            assertEquals("incorrect email", exception.message)
-        }
+        val invalidEmails = listOf(
+            "wrongEmail",
+            "wrong@email",
+            "wrong@email.",
+            "@email.com",
+            "user..name@example.com",
+            "user@-example.com",
+            "user@.com"
+        )
+
+        invalidEmails
+            .map { email -> validUserCreate.copy(email = email) }
+            .forEach { user ->
+                val exception = assertThrows<BadCredentials> { controller.register(user) }
+                assertEquals("incorrect email", exception.message)
+            }
     }
 
     @Test

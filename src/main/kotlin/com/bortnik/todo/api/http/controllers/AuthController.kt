@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+val EMAIL_REGEX = Regex("""^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\.[A-Za-z]{2,}$""")
+
 @RestController
 @RequestMapping("api/auth")
 class AuthController(
@@ -38,7 +40,7 @@ class AuthController(
     }
 
     private fun isEmail(field: String): Boolean {
-        return Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(field)
+        return EMAIL_REGEX.matches(field)
     }
 
     private fun validateUserLogin(username: String, password: String) {

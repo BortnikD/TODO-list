@@ -2,6 +2,7 @@ package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
+import com.bortnik.todo.api.http.validators.EmailValidator
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-val EMAIL_REGEX = Regex("""^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\.[A-Za-z]{2,}$""")
 
 @RestController
 @RequestMapping("api/auth")
@@ -40,7 +40,7 @@ class AuthController(
     }
 
     private fun isEmail(field: String): Boolean {
-        return EMAIL_REGEX.matches(field)
+        return EmailValidator.isValid(field)
     }
 
     private fun validateUserLogin(username: String, password: String) {

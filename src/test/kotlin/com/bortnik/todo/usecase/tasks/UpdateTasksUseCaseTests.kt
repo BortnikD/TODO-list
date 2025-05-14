@@ -5,7 +5,7 @@ import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.entities.Task
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
-import com.bortnik.todo.domain.exceptions.user.AcceptError
+import com.bortnik.todo.domain.exceptions.auth.AcceptError
 import com.bortnik.todo.domain.repositories.TaskRepository
 import com.bortnik.todo.usecase.category.GetCategoryUseCase
 import com.bortnik.todo.usecase.task.UpdateTaskUseCase

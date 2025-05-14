@@ -1,7 +1,7 @@
 package com.bortnik.todo.usecase.category
 
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
-import com.bortnik.todo.domain.exceptions.user.AcceptError
+import com.bortnik.todo.domain.exceptions.auth.AcceptError
 import com.bortnik.todo.domain.repositories.CategoryRepository
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service

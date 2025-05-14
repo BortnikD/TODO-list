@@ -3,7 +3,7 @@ package com.bortnik.todo.usecase.category
 import com.bortnik.todo.domain.dto.CategoryUpdate
 import com.bortnik.todo.domain.entities.Category
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
-import com.bortnik.todo.domain.exceptions.user.AcceptError
+import com.bortnik.todo.domain.exceptions.auth.AcceptError
 import com.bortnik.todo.domain.repositories.CategoryRepository
 import io.mockk.every
 import io.mockk.mockk

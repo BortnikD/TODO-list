@@ -4,7 +4,7 @@ import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.domain.exceptions.category.CategoryNotFound
 import com.bortnik.todo.api.http.exceptions.InvalidRequestField
 import com.bortnik.todo.domain.exceptions.task.TaskNotFound
-import com.bortnik.todo.domain.exceptions.user.AcceptError
+import com.bortnik.todo.domain.exceptions.auth.AcceptError
 import com.bortnik.todo.domain.exceptions.user.UserAlreadyExists
 import com.bortnik.todo.domain.exceptions.user.UserNotFound
 import org.springframework.http.HttpStatus

@@ -1,4 +1,4 @@
-package com.bortnik.todo.domain.exceptions.user
+package com.bortnik.todo.domain.exceptions.auth
 
 class AcceptError: Exception {
     constructor(message: String): super(message)

@@ -3,6 +3,7 @@ package com.bortnik.todo.api.http.controllers
 import com.bortnik.todo.api.http.dto.UserUpdateRequest
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.UserApiDocs
+import com.bortnik.todo.api.http.validators.EmailValidator
 import com.bortnik.todo.domain.dto.user.UserPublic
 import com.bortnik.todo.domain.dto.user.UserUpdate
 import com.bortnik.todo.domain.dto.user.toPublic
@@ -88,7 +89,7 @@ class UserController(
             if (email.length < 5 || email.length > 64) {
                 throw BadCredentials("email is too long or short")
             }
-            else if (!Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(email)) {
+            else if (EmailValidator.isValid(email)) {
                 throw BadCredentials("incorrect email")
             }
             else if (email == userDomain.email) {

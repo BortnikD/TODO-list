@@ -2,7 +2,8 @@ package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
-import com.bortnik.todo.api.http.validators.EmailValidator
+import com.bortnik.todo.api.http.validators.user.EmailValidator
+import com.bortnik.todo.api.http.validators.user.UsernameValidator
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
@@ -47,7 +48,7 @@ class AuthController(
         if (username.length < 3 || username.length > 64) {
             throw BadCredentials("username is too long or short")
         }
-        if (!isEmail(username) && !Regex("^[A-Za-z0-9_]+$").matches(username)) {
+        if (!isEmail(username) && UsernameValidator.isValid(username)) {
             throw BadCredentials("username can contains only latin characters, digits, and '_'")
         }
         if (password.length < 8) {

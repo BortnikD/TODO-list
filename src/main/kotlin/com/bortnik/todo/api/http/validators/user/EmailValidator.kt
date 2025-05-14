@@ -1,4 +1,4 @@
-package com.bortnik.todo.api.http.validators
+package com.bortnik.todo.api.http.validators.user
 
 object EmailValidator {
     private val emailRegex = Regex(

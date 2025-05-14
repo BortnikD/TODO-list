@@ -3,7 +3,8 @@ package com.bortnik.todo.api.http.controllers
 import com.bortnik.todo.api.http.dto.UserUpdateRequest
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.UserApiDocs
-import com.bortnik.todo.api.http.validators.EmailValidator
+import com.bortnik.todo.api.http.validators.user.EmailValidator
+import com.bortnik.todo.api.http.validators.user.UsernameValidator
 import com.bortnik.todo.domain.dto.user.UserPublic
 import com.bortnik.todo.domain.dto.user.UserUpdate
 import com.bortnik.todo.domain.dto.user.toPublic
@@ -51,7 +52,7 @@ class UserController(
 
     @GetMapping
     override fun getUserByUsernameOrEmail(@RequestParam usernameOrEmail: String): UserPublic {
-        if (usernameOrEmail.length < 3 || usernameOrEmail.length > 64) {
+        if (usernameOrEmail.length < 3 || usernameOrEmail.length > 255) {
             throw BadCredentials("username of email is too long or short")
         }
         return getUserUseCase.getByUsername(usernameOrEmail)?.toPublic()
@@ -78,6 +79,9 @@ class UserController(
             if (username.length < 3 || username.length > 64) {
                 throw BadCredentials("username is too long or short")
             }
+            else if (!UsernameValidator.isValid(username)) {
+                throw BadCredentials("username can contains only latin characters, digits, and '_'")
+            }
             else if (username == user.username) {
                 throw BadCredentials("this username already belongs to you")
             }
@@ -86,7 +90,7 @@ class UserController(
         val userDomain = user.getDomainUser(getUserUseCase)
 
         userUpdateRequest.email?.let { email ->
-            if (email.length < 5 || email.length > 64) {
+            if (email.length < 5 || email.length > 255) {
                 throw BadCredentials("email is too long or short")
             }
             else if (EmailValidator.isValid(email)) {

@@ -1,5 +1,6 @@
 package com.bortnik.todo.usecase
 
+import com.bortnik.todo.api.http.validators.user.EmailValidator
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserLogin
@@ -34,7 +35,7 @@ class AuthService(
     }
 
     fun authentication(user: UserLogin): AuthResponse {
-        val username = if (Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(user.username)) {
+        val username = if (EmailValidator.isValid(user.username)) {
             getUserUseCase.getByEmail(user.username)?.username
                 ?: throw UserNotFound("user with this email '${user.username}' does not exists")
         } else {

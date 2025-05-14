@@ -2,6 +2,7 @@ package com.bortnik.todo.api.http.controllers
 
 import com.bortnik.todo.api.http.exceptions.BadCredentials
 import com.bortnik.todo.api.http.openapi.controllers.AuthApiDocs
+import com.bortnik.todo.api.http.validators.EmailValidator
 import com.bortnik.todo.domain.dto.user.AuthResponse
 import com.bortnik.todo.domain.dto.user.UserCreate
 import com.bortnik.todo.domain.dto.user.UserLogin
@@ -21,7 +22,7 @@ class AuthController(
     override fun register(@RequestBody user: UserCreate): AuthResponse {
         validateUserLogin(user.username, user.password)
         user.email?.let { email ->
-            if(email.length < 5 || email.length > 64) {
+            if(email.length < 5 || email.length > 254) {
                 throw BadCredentials("email is too long or short")
             }
             if(!isEmail(email)) {
@@ -38,7 +39,7 @@ class AuthController(
     }
 
     private fun isEmail(field: String): Boolean {
-        return Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(field)
+        return EmailValidator.isValid(field)
     }
 
     private fun validateUserLogin(username: String, password: String) {

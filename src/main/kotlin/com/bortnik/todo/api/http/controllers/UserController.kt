@@ -51,7 +51,7 @@ class UserController(
 
     @GetMapping
     override fun getUserByUsernameOrEmail(@RequestParam usernameOrEmail: String): UserPublic {
-        if (usernameOrEmail.length < 3 || usernameOrEmail.length > 64) {
+        if (usernameOrEmail.length < 3 || usernameOrEmail.length > 255) {
             throw BadCredentials("username of email is too long or short")
         }
         return getUserUseCase.getByUsername(usernameOrEmail)?.toPublic()
@@ -86,7 +86,7 @@ class UserController(
         val userDomain = user.getDomainUser(getUserUseCase)
 
         userUpdateRequest.email?.let { email ->
-            if (email.length < 5 || email.length > 64) {
+            if (email.length < 5 || email.length > 255) {
                 throw BadCredentials("email is too long or short")
             }
             else if (EmailValidator.isValid(email)) {

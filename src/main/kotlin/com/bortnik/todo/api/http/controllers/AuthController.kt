@@ -23,7 +23,7 @@ class AuthController(
     override fun register(@RequestBody user: UserCreate): AuthResponse {
         validateUserLogin(user.username, user.password)
         user.email?.let { email ->
-            if(email.length < 5 || email.length > 64) {
+            if(email.length < 5 || email.length > 255) {
                 throw BadCredentials("email is too long or short")
             }
             if(!isEmail(email)) {
